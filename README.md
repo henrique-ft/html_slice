@@ -17,6 +17,75 @@ If bundler is not being used to manage dependencies, install the gem by executin
 ```ruby
 require 'html_slice'
 
+class MyHtmlPage
+  include HtmlSlice
+
+  def render
+    html_slice do
+       h1 'hello world'
+       text
+    end
+  end
+
+  def text
+    tag :p, %q(
+      Lorem ipsum dolor sit amet
+    )
+  end
+end
+
+MyHtmlPage.new.render
+```
+
+#### Rails controller example
+```ruby
+require 'html_slice'
+
+class ApplicationController
+  include HtmlSlice
+
+  def html(&block) = html_slice(&block)
+end
+
+# Imagine a Rails controller
+class MyController < ApplicationController
+  before_action :set_items
+
+  def index
+    render html: (html do
+      h1 'hello world'
+
+      div class: 'to-do' do
+        to_do_list
+      end
+    end)
+  end
+  # "<h1>hello world</h1><div class='to-do'><ul><li>Clean the house</li><li>Study Ruby</li><li>Play sports</li></ul></div>"
+
+  def custom_head
+    title 'Hello HtmlSlice'
+  end
+
+  private
+
+  def to_do_list
+    ul do
+      @items.each do |item|
+        li item
+      end
+    end
+  end
+
+  def set_items
+    @items ||= ['Clean the house', 'Study Ruby', 'Play sports']
+  end
+end
+```
+
+##### With layout
+```ruby
+require 'html_slice'
+
 class ApplicationController
   include HtmlSlice
 
