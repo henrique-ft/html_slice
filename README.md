@@ -1,6 +1,6 @@
 # HtmlSlice
 
-Make Ruby classes the ability to generate reusable pieces of html
+Enable Ruby classes the ability to generate reusable pieces of html
 
 ## Installation
 
