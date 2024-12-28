@@ -62,10 +62,6 @@ class MyController < ApplicationController
   end
   # "<h1>hello world</h1><div class='to-do'><ul><li>Clean the house</li><li>Study Ruby</li><li>Play sports</li></ul></div>"
 
-  def custom_head
-    title 'Hello HtmlSlice'
-  end
-
   private
 
   def to_do_list
