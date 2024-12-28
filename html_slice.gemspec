@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["henrique-ft"]
   spec.email = ["hriqueft@gmail.com"]
 
-  spec.summary = "Make Ruby classes the ability to generate reusable pieces of html"
-  spec.description = "Make Ruby classes the ability to generate reusable pieces of html"
+  spec.summary = "Enable Ruby classes the ability to generate reusable pieces of html"
+  spec.description = "Enable Ruby classes the ability to generate reusable pieces of html"
   #spec.homepage = "https://github.com/henrique-ft/html_slice"
   spec.required_ruby_version = ">= 2.5.0"
 
