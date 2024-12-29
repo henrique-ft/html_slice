@@ -4,6 +4,13 @@
 
 Enable Ruby classes the ability to generate reusable pieces of html
 
+## Features
+
+- Generate HTML dynamically in instance scope.
+- Faster than ERB for many use cases.
+- Supports a wide range of HTML tags, including empty tags like `<br>` and `<img>`.
+- Escapes HTML content to prevent XSS vulnerabilities.
+
 ## Installation
 
 Install the gem and add to the application's Gemfile by executing:
@@ -15,6 +22,8 @@ If bundler is not being used to manage dependencies, install the gem by executin
     $ gem install html_slice
 
 ## Usage
+
+Include HtmlSlice in any Ruby class to generate HTML dynamically.
 
 ```ruby
 require 'html_slice'
