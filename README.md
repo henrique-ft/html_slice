@@ -6,7 +6,7 @@ Enable Ruby classes the ability to generate reusable pieces of html
 
 ## Features
 
-- Generate HTML dynamically in instance scope.
+- Generate HTML dynamically in instance scope: unlike *Markaby*, HtmlSlice `self` points to the class that are using it, make easier to reuse code and make abstractions (see https://github.com/markaby/markaby?tab=readme-ov-file#label-A+Note+About+instance_eval)
 - Faster than ERB for many use cases.
 - Supports a wide range of HTML tags, including empty tags like `<br>` and `<img>`.
 - Escapes HTML content to prevent XSS vulnerabilities.
@@ -52,7 +52,7 @@ MyHtmlPage.new.render
 ```
 
 ##### Explanation
-- The html_slice method starts the HTML generation process creating an **@html_slice** instance variable and returning its content.
+- The `html_slice` method starts the HTML generation process creating an **@html_slice** instance variable and returning its content.
 - Each time we call the html tag methods, the method append the generated html in **@html_slice**.
 - Tags like div, h1, and ul are dynamically defined as methods, enabling you to structure HTML seamlessly.
 - Tags that are not defined as methods can be generated using the `tag` method (*only the most common tags are dinamically defined as methods, except "p", "head" and "body")
