@@ -1,4 +1,4 @@
-![HtmlSlice](https://raw.githubusercontent.com/henrique-ft/html_slice/main/html_slice.png)
+![HtmlSlice](https://raw.githubusercontent.com/henrique-ft/html_slice/main/html_slice_logo.png)
 
 # HtmlSlice
 
