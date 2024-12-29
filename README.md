@@ -35,6 +35,9 @@ class MyHtmlPage
     html_slice do
        h1 'hello world'
        text
+       div do
+         _ '<b> some raw html </b>'
+       end 
     end
   end
 
@@ -46,6 +49,29 @@ class MyHtmlPage
 end
 
 MyHtmlPage.new.render
+```
+
+##### Explanation
+- The html_slice method starts the HTML generation process creating an **@html_slice** instance variable and returning its content.
+- Each time we call the html tag methods, the method append the generated html in **@html_slice**.
+- Tags like div, h1, and ul are dynamically defined as methods, enabling you to structure HTML seamlessly.
+- Tags that are not defined as methods can be generated using the `tag` method (*only the most common tags are dinamically defined as methods, except "p", "head" and "body")
+- Use the _ method to append raw content to the **@html_slice**.
+
+#### Adding Attributes
+HTML attributes can be added to tags as a hash:
+
+```ruby
+div id: "main", class: "highlighted" do
+  span "Hello world"
+end
+```
+
+"_" in html attributes is converted to "-"
+```ruby
+div x_data: "{ hello: 'world' }" do # x-data="{ hello: 'world' }"
+  span "Hello world"
+end
 ```
 
 #### Rails controller example
@@ -97,7 +123,7 @@ class ApplicationController
   include HtmlSlice
 
   def layout
-    html_layout do
+    html_layout do # Same as html slice but wrap the content in a <!DOCTYPE html><html>...</html> structure
       tag :head do
         meta charset: 'utf-8'
 
