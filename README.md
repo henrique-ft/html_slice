@@ -9,7 +9,7 @@ Enable Ruby classes the ability to generate reusable pieces of html
 - Generate HTML dynamically in instance scope: unlike Markaby, HtmlSlice `self` points to the class that are using it, make easier to reuse code and make abstractions (see https://github.com/markaby/markaby?tab=readme-ov-file#label-A+Note+About+instance_eval)
 - Faster than ERB for many use cases.
 - Supports a wide range of HTML tags, including empty tags like `<br>` and `<img>`.
-- Can be used to generate all application html or only html partials (slices 🍰).
+- Can be used to generate all application html or only html partials (slices 🍕).
 - Smoothly integration with Rails controllers and views.
 - Lightweight.
 - Escapes HTML content to prevent XSS vulnerabilities.
@@ -61,7 +61,7 @@ MyHtmlPage.new.render
 - Tags that are not defined as methods can be generated using the `tag` method (*only the most common tags are dinamically defined as methods, except "p", "head" and "body")
 - Use the _ method to append raw content to the **@html_slice**.
 
-#### Adding Attributes
+### Adding Attributes
 HTML attributes can be added to tags as a hash:
 
 ```ruby
@@ -77,7 +77,7 @@ div x_data: "{ hello: 'world' }" do # x-data="{ hello: 'world' }"
 end
 ```
 
-##### The @html_slice instance variable
+### The @html_slice instance variable
 
 The **@html_slice** holds a hash where every key maps to a html string generated calling the "tag methods", html slice default key is `:default`
 
@@ -115,12 +115,32 @@ end
 MyHtmlPage.new.render
 ```
 
-⚠️ Important: Tag methods and our instance methods that use the tag methods must only be called inside an html_slice block
+⚠️ Important: Tag methods and our instance methods that use the tag methods must only be called inside an `html_slice` block
 
 
-#### Rails controller examples
+### Rails examples
 
-##### Rendering pure html slices
+##### Rendering partials using html slice keys:
+
+```ruby
+class MyController < ApplicationController
+  before_action :set_items
+
+  def index
+    html_slice :say_hello do
+      h1 'hello 🍕'
+    end
+
+    render 'my_view'
+  end
+end
+
+# my_view.html.erb
+
+<%= @html_slice[:say_hello] %>
+```
+
+##### Rendering pure html slices:
 ```ruby
 class ApplicationController
   include HtmlSlice
@@ -159,7 +179,7 @@ class MyController < ApplicationController
 end
 ```
 
-##### Rendering entire html pages with `html_layout`
+##### Rendering entire html pages with `html_layout`:
 ```ruby
 class ApplicationController
   include HtmlSlice
@@ -212,26 +232,6 @@ class MyController < ApplicationController
     @items ||= ['Clean the house', 'Study Ruby', 'Play sports']
   end
 end
-```
-
-##### Rendering partials using html slice keys
-
-```ruby
-class MyController < ApplicationController
-  before_action :set_items
-
-  def index
-    html_slice :say_hello do
-      h1 'hello 🍰'
-    end
-
-    render 'my_view'
-  end
-end
-
-# my_view.html.erb
-
-<%= @html_slice[:say_hello] %>
 ```
 
 ## Development
