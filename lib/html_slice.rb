@@ -2,7 +2,6 @@
 
 require_relative "html_slice/version"
 require "cgi"
-require "byebug"
 
 module HtmlSlice
   class Error < StandardError; end
