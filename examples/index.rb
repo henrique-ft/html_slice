@@ -1,19 +1,19 @@
-require 'html_slice'
+# frozen_string_literal: true
+
+require "html_slice"
 
 class BaseController
   include HtmlSlice
 
-  def layout
+  def layout(&block)
     html_layout do
       tag :head do
-        meta charset: 'utf-8'
+        meta charset: "utf-8"
 
         custom_head
       end
 
-      tag :body do
-        yield
-      end
+      tag :body, &block
     end
   end
 end
@@ -21,16 +21,16 @@ end
 class MyController < BaseController
   def render
     layout do
-      h1 'hello world'
+      h1 "hello world"
 
-      div class: 'to-do' do
+      div class: "to-do" do
         to_do_list
       end
     end
   end
 
   def custom_head
-    title 'Hello HtmlSlice'
+    title "Hello HtmlSlice"
   end
 
   private
@@ -44,7 +44,7 @@ class MyController < BaseController
   end
 
   def items
-    ['Clean the house', 'Study Ruby', 'Play sports']
+    ["Clean the house", "Study Ruby", "Play sports"]
   end
 end
 

@@ -52,7 +52,7 @@ module HtmlSlice
     script
     nav
     area
-  ]
+  ].freeze
 
   EMPTY_TAGS = %i[
     area
@@ -71,11 +71,12 @@ module HtmlSlice
   def html_layout(html_slice_current_id = DEFAULT_SLICE, &block)
     html_slice(
       html_slice_current_id,
-      wrap: ['<!DOCTYPE html><html>', '</html>'],
-      &block)
+      wrap: ["<!DOCTYPE html><html>", "</html>"],
+      &block
+    )
   end
 
-  def html_slice(html_slice_current_id = DEFAULT_SLICE, wrap: ['',''], &block)
+  def html_slice(html_slice_current_id = DEFAULT_SLICE, wrap: ["", ""], &block)
     @html_slice_current_id = html_slice_current_id
     if block_given?
       @html_slice ||= {}
@@ -83,7 +84,7 @@ module HtmlSlice
       instance_eval(&block)
       @html_slice[@html_slice_current_id] << wrap[1]
     else
-      @html_slice[@html_slice_current_id] || ''
+      @html_slice[@html_slice_current_id] || ""
     end
   end
 
@@ -105,7 +106,7 @@ module HtmlSlice
   private
 
   def parse_html_tag_arguments(args)
-    content = ''
+    content = ""
     attributes = {}
 
     first_argument = args.shift
@@ -126,19 +127,17 @@ module HtmlSlice
       @html_slice[@html_slice_current_id] << open_tag << ">"
       instance_eval(&block)
       @html_slice[@html_slice_current_id] << "</#{tag_name}>"
+    elsif content.empty? && EMPTY_TAGS.include?(tag_name)
+      @html_slice[@html_slice_current_id] << open_tag << "/>"
     else
-      if content.empty? && EMPTY_TAGS.include?(tag_name)
-        @html_slice[@html_slice_current_id] << open_tag << "/>"
-      else
-        @html_slice[@html_slice_current_id] << open_tag << ">" << content << "</#{tag_name}>"
-      end
+      @html_slice[@html_slice_current_id] << open_tag << ">" << content << "</#{tag_name}>"
     end
   end
 
   def build_html_open_tag(tag_name, attributes)
     open_tag = "<#{tag_name}"
     attributes.each do |key, value|
-      open_tag << " #{key.to_s.gsub('_', '-')}='#{value}'"
+      open_tag << " #{key.to_s.gsub("_", "-")}='#{value}'"
     end
     open_tag
   end
