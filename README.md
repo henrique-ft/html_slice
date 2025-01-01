@@ -71,7 +71,8 @@ class MyHtmlPage
   end
 end
 
-MyHtmlPage.new.render
+puts MyHtmlPage.new.render
+# <h1>hello world</h1><p>Lorem ipsum dolor sit amet</p><div><b> some raw html </b></div>
 ```
 
 ##### Explanation
@@ -79,7 +80,7 @@ MyHtmlPage.new.render
 - Each time we call the html tag methods, the method append the generated html in **@html_slice**.
 - Tags like div, h1, and ul are dynamically defined as methods, enabling you to structure HTML seamlessly.
 - Tags that are not defined as methods can be generated using the `tag` method (*only the most common tags are dinamically defined as methods, except "p", "head" and "body")
-- Use the _ method to append raw content to the **@html_slice**.
+- Use the `_` method to append raw content to the **@html_slice**.
 
 ### Adding Attributes
 HTML attributes can be added to tags as a hash:
