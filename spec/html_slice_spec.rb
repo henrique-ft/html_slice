@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/BlockLength
 RSpec.describe HtmlSlice do
   let(:html_generator) { Class.new { include HtmlSlice }.new }
 
@@ -139,3 +140,4 @@ RSpec.describe HtmlSlice do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength
