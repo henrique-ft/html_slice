@@ -52,7 +52,7 @@ module HtmlSlice
     script
     nav
     area
-  ]
+  ].freeze
 
   EMPTY_TAGS = %i[
     area
@@ -66,22 +66,25 @@ module HtmlSlice
     source
   ].freeze
 
-  def html_layout(&block)
-    html_slice(:root, &block)
+  DEFAULT_SLICE = :default
+
+  def html_layout(html_slice_current_id = DEFAULT_SLICE, &block)
+    html_slice(
+      html_slice_current_id,
+      wrap: ["<!DOCTYPE html><html>", "</html>"],
+      &block
+    )
   end
 
-  def html_slice(type = nil, &block)
+  def html_slice(html_slice_current_id = DEFAULT_SLICE, wrap: ["", ""], &block)
+    @html_slice_current_id = html_slice_current_id
     if block_given?
-      if type == :root
-        wrap = ['<!DOCTYPE html><html>', '</html>']
-      else
-        wrap = ['','']
-      end
-      @html_slice = wrap[0].dup
+      @html_slice ||= {}
+      @html_slice[@html_slice_current_id] = wrap[0].dup
       instance_eval(&block)
-      @html_slice << wrap[1]
+      @html_slice[@html_slice_current_id] << wrap[1]
     else
-      @html_slice
+      @html_slice[@html_slice_current_id] || ""
     end
   end
 
@@ -92,7 +95,7 @@ module HtmlSlice
   end
 
   def _(content)
-    @html_slice << content.to_s
+    @html_slice[@html_slice_current_id] << content.to_s
   end
 
   def tag(tag_name, *args, &block)
@@ -103,7 +106,7 @@ module HtmlSlice
   private
 
   def parse_html_tag_arguments(args)
-    content = ''
+    content = ""
     attributes = {}
 
     first_argument = args.shift
@@ -121,22 +124,20 @@ module HtmlSlice
     open_tag = build_html_open_tag(tag_name, attributes)
 
     if block_given?
-      @html_slice << open_tag << ">"
+      @html_slice[@html_slice_current_id] << open_tag << ">"
       instance_eval(&block)
-      @html_slice << "</#{tag_name}>"
+      @html_slice[@html_slice_current_id] << "</#{tag_name}>"
+    elsif content.empty? && EMPTY_TAGS.include?(tag_name)
+      @html_slice[@html_slice_current_id] << open_tag << "/>"
     else
-      if content.empty? && EMPTY_TAGS.include?(tag_name)
-        @html_slice << open_tag << "/>"
-      else
-        @html_slice << open_tag << ">" << content << "</#{tag_name}>"
-      end
+      @html_slice[@html_slice_current_id] << open_tag << ">" << content << "</#{tag_name}>"
     end
   end
 
   def build_html_open_tag(tag_name, attributes)
     open_tag = "<#{tag_name}"
     attributes.each do |key, value|
-      open_tag << " #{key.to_s.gsub('_', '-')}='#{value}'"
+      open_tag << " #{key.to_s.gsub("_", "-")}='#{value}'"
     end
     open_tag
   end

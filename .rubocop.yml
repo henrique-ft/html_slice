@@ -1,8 +1,17 @@
 AllCops:
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 2.5
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 
 Style/StringLiteralsInInterpolation:
   EnforcedStyle: double_quotes
+
+Metrics/ModuleLength:
+  Max: 150
+
+Metrics/AbcSize:
+  Max: 19
+
+Style/Documentation:
+  Enabled: false

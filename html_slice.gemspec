@@ -10,16 +10,16 @@ Gem::Specification.new do |spec|
 
   spec.summary = "Enable Ruby classes the ability to generate reusable pieces of html"
   spec.description = "Enable Ruby classes the ability to generate reusable pieces of html"
-  #spec.homepage = "https://github.com/henrique-ft/html_slice"
+  # spec.homepage = "https://github.com/henrique-ft/html_slice"
   spec.required_ruby_version = ">= 2.5.0"
 
-  #spec.metadata["homepage_uri"] = spec.homepage
+  # spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/henrique-ft/html_slice"
   spec.metadata["changelog_uri"] = "https://github.com/henrique-ft/html_slice/blob/master/CHANGELOG.md"
 
   spec.files =
-    ['lib/html_slice.rb',
-     'lib/html_slice/version.rb']
+    ["lib/html_slice.rb",
+     "lib/html_slice/version.rb"]
 
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
