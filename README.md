@@ -4,6 +4,26 @@
 
 Enable Ruby classes the ability to generate reusable pieces of html
 
+```ruby
+class MyController < ApplicationController
+  include HtmlSlice
+
+  def index
+    html_slice :say_hello do
+      h1 "hello #{pizza}"
+    end
+  end
+
+  def pizza
+    "🍕"
+  end
+end
+
+# index.html.erb
+
+<%= @html_slice[:say_hello] %>
+```
+
 ## Features
 
 - Generate HTML dynamically in instance scope: unlike Markaby, HtmlSlice `self` points to the class that are using it, make easier to reuse code and make abstractions (see https://github.com/markaby/markaby?tab=readme-ov-file#label-A+Note+About+instance_eval)
@@ -124,18 +144,20 @@ MyHtmlPage.new.render
 
 ```ruby
 class MyController < ApplicationController
-  before_action :set_items
+  include HtmlSlice
 
   def index
     html_slice :say_hello do
-      h1 'hello 🍕'
+      h1 "hello #{pizza}"
     end
+  end
 
-    render 'my_view'
+  def pizza
+    "🍕"
   end
 end
 
-# my_view.html.erb
+# index.html.erb
 
 <%= @html_slice[:say_hello] %>
 ```
