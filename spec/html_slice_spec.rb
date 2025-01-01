@@ -3,9 +3,9 @@
 RSpec.describe HtmlSlice do
   let(:html_generator) { Class.new { include HtmlSlice }.new }
 
-  describe '#html_slice' do
+  describe '#html_layout' do
     it 'generates a html slice with DOCTYPE html' do
-      html_generator.html_slice :root do
+      html_generator.html_layout do
         div do
           h1 { _("Hello World") }
         end
@@ -13,7 +13,9 @@ RSpec.describe HtmlSlice do
       result = html_generator.html_slice
       expect(result).to eq("<!DOCTYPE html><html><div><h1>Hello World</h1></div></html>")
     end
+  end
 
+  describe '#html_slice' do
     it 'generates a html slice' do
       html_generator.html_slice do
         div do
@@ -96,6 +98,26 @@ RSpec.describe HtmlSlice do
       end
       result = html_generator.html_slice
       expect(result).to include("<ul><li>Item 1</li><li>Item 2</li></ul>")
+    end
+  end
+
+  it 'we can add ids to html slice' do
+    html_generator.html_slice :header do
+      div do
+        h1 { _("Hello World") }
+      end
+    end
+    result = html_generator.html_slice :header
+    expect(result).to eq("<div><h1>Hello World</h1></div>")
+  end
+
+  describe 'wrapping' do
+    it 'append wrap content in start and end of result' do
+      html_generator.html_slice wrap: ['some', 'thing'] do
+        img src: "image.png", alt: "An image"
+      end
+      result = html_generator.html_slice
+      expect(result).to include("some<img src='image.png' alt='An image'/>thing")
     end
   end
 
