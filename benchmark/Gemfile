@@ -4,7 +4,6 @@ source "https://rubygems.org"
 
 # gem "rails"
 
-gem 'benchmark'
-gem 'erubi'
-gem 'html_slice'
-
+gem "benchmark"
+gem "erubi"
+gem "html_slice"

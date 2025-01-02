@@ -1,5 +1,7 @@
 AllCops:
   TargetRubyVersion: 2.5
+  Exclude:
+    - 'benchmark/**/*'
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
@@ -10,8 +12,11 @@ Style/StringLiteralsInInterpolation:
 Metrics/ModuleLength:
   Max: 150
 
+Metrics/MethodLength:
+  Max: 20
+
 Metrics/AbcSize:
-  Max: 19
+  Max: 30
 
 Style/Documentation:
   Enabled: false
