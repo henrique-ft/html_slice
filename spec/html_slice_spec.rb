@@ -112,6 +112,16 @@ RSpec.describe HtmlSlice do
     expect(result).to eq("<div><h1>Hello World</h1></div>")
   end
 
+  it "we can run tag methods without html_slice init" do
+    html_generator.tag :header do
+      meta charset: "utf-8"
+    end
+    result = html_generator.div do
+      h1 "hello"
+    end
+    expect(result).to eq("<header><meta charset='utf-8'/></header><div><h1>hello</h1></div>")
+  end
+
   describe "wrapping" do
     it "append wrap content in start and end of result" do
       html_generator.html_slice wrap: %w[some thing] do

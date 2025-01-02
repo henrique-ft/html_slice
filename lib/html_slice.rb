@@ -78,7 +78,7 @@ module HtmlSlice
 
   def html_slice(html_slice_current_id = DEFAULT_SLICE, wrap: ["", ""], &block)
     @html_slice_current_id = html_slice_current_id
-    if block_given?
+    if block
       @html_slice ||= {}
       @html_slice[@html_slice_current_id] = wrap[0].dup
       instance_eval(&block)
@@ -122,8 +122,11 @@ module HtmlSlice
 
   def generate_and_append_html_tag(tag_name, content, attributes, &block)
     open_tag = build_html_open_tag(tag_name, attributes)
+    @html_slice ||= {}
+    @html_slice_current_id ||= DEFAULT_SLICE
+    @html_slice[@html_slice_current_id] ||= +""
 
-    if block_given?
+    if block
       @html_slice[@html_slice_current_id] << open_tag << ">"
       instance_eval(&block)
       @html_slice[@html_slice_current_id] << "</#{tag_name}>"
@@ -137,7 +140,7 @@ module HtmlSlice
   def build_html_open_tag(tag_name, attributes)
     open_tag = "<#{tag_name}"
     attributes.each do |key, value|
-      open_tag << " #{key.to_s.gsub("_", "-")}='#{value}'"
+      open_tag << " #{key.to_s.tr("_", "-")}='#{value}'"
     end
     open_tag
   end

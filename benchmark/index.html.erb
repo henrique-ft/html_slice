@@ -1,0 +1,4 @@
+<% 3.times do %>
+  <h1> Benchmark </h1>
+  <%= eval(Erubi::Engine.new(File.read("hello_h1.html.erb")).src) %>
+<% end %>
