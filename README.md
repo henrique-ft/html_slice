@@ -1,5 +1,7 @@
 ![HtmlSlice](https://raw.githubusercontent.com/henrique-ft/html_slice/main/html_slice_logo.png)
 
+![Gem Version](https://img.shields.io/gem/v/html_slice?style=flat-square)
+
 # HtmlSlice
 
 Enable Ruby classes the ability to generate reusable pieces of html
