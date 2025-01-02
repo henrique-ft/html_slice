@@ -1,6 +1,6 @@
 ![HtmlSlice](https://raw.githubusercontent.com/henrique-ft/html_slice/main/html_slice_logo.png)
 
-![Gem Version](https://img.shields.io/gem/v/html_slice?style=flat-square)
+![Gem Version](https://img.shields.io/gem/v/html_slice?style=social)
 
 # HtmlSlice
 
