@@ -209,7 +209,7 @@ class ApplicationController
   include HtmlSlice
 
   def layout
-    html_layout { # Same as html slice but wrap the content in a <!DOCTYPE html><html>...</html> structure
+    html_layout { # Same as html_slice but wrap the content in a <!DOCTYPE html><html>...</html> structure
       tag :head do
         meta charset: 'utf-8'
 
