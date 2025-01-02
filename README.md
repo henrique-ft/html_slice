@@ -21,17 +21,15 @@ end
 
 # index.html.erb
 
-<%= @html_slice[:say_hello] %>
+<%= raw @html_slice[:say_hello] %>
 ```
 
 ## Features
 
-- Generate HTML dynamically in instance scope: unlike Markaby, HtmlSlice `self` points to the class that are using it, make easier to reuse code and make abstractions (see https://github.com/markaby/markaby?tab=readme-ov-file#label-A+Note+About+instance_eval)
-- Faster than ERB for many use cases (raw Ruby code performance instead of reading and parsing many files like the page, the layout and partials) ⚡
+- Generate HTML dynamically in instance scope: unlike Markaby, HtmlSlice `self` points to the class that are using it, make easier to reuse code and make abstractions (see https://github.com/markaby/markaby?tab=readme-ov-file#label-A+Note+About+instance_eval).
 - Supports a wide range of HTML tags, including empty tags like `<br>` and `<img>`.
 - Can be used to generate all application html or only html partials (slices 🍕).
-- Smoothly integration with Rails controllers and views.
-- Lightweight.
+- Lightweight, use html_slice without performance penalties.
 - Escapes HTML content to prevent XSS vulnerabilities.
 
 ## Installation
@@ -51,10 +49,10 @@ Include HtmlSlice in any Ruby class to generate HTML dynamically.
 ```ruby
 require 'html_slice'
 
-class MyHtmlPage
+class HelloView
   include HtmlSlice
 
-  def render
+  def to_html
     html_slice do
       h1 'hello world'
       text
@@ -71,7 +69,7 @@ class MyHtmlPage
   end
 end
 
-puts MyHtmlPage.new.render
+puts HelloView.new.to_html
 # <h1>hello world</h1><p>Lorem ipsum dolor sit amet</p><div><b> some raw html </b></div>
 ```
 
@@ -105,10 +103,10 @@ The **@html_slice** holds a hash where every key maps to a html string generated
 ```ruby
 require 'html_slice'
 
-class MyHtmlPage
+class HelloView
   include HtmlSlice
 
-  def render
+  def to_html
     html_slice do # @html_slice[:default] = ''
       h1 'hello world' # @html_slice[:default] << '<h1>hello world</h1>'
       text # @html_slice[:default] << '<p>Lorem ipsum dolor sit amet</p>'
@@ -133,7 +131,7 @@ class MyHtmlPage
   end
 end
 
-MyHtmlPage.new.render
+HelloView.new.to_html
 ```
 
 ⚠️ Important: Tag methods and our instance methods that use the tag methods must only be called inside an `html_slice` block
@@ -141,34 +139,14 @@ MyHtmlPage.new.render
 
 ### Rails examples
 
-##### Rendering partials using html slice keys:
-
-```ruby
-class MyController < ApplicationController
-  include HtmlSlice
-
-  def index
-    html_slice :say_hello do
-      h1 "hello #{pizza}"
-    end
-  end
-
-  def pizza
-    "🍕"
-  end
-end
-
-# index.html.erb
-
-<%= @html_slice[:say_hello] %>
-```
-
 ##### Rendering pure html slices:
 ```ruby
 class ApplicationController
   include HtmlSlice
 
-  def html(&block) = html_slice(&block)
+  def html(&block) 
+    html_slice(&block).html_safe
+  end
 end
 
 # Imagine a Rails controller
@@ -201,6 +179,27 @@ class MyController < ApplicationController
   end
 end
 ```
+##### Rendering partials using html slice keys:
+
+```ruby
+class MyController < ApplicationController
+  include HtmlSlice
+
+  def index
+    html_slice :say_hello do
+      h1 "hello #{pizza}"
+    end
+  end
+
+  def pizza
+    "🍕"
+  end
+end
+
+# index.html.erb
+
+<%= raw @html_slice[:say_hello] %>
+```
 
 ##### Rendering entire html pages with `html_layout`:
 ```ruby
@@ -208,7 +207,7 @@ class ApplicationController
   include HtmlSlice
 
   def layout
-    html_layout do # Same as html slice but wrap the content in a <!DOCTYPE html><html>...</html> structure
+    html_layout { # Same as html slice but wrap the content in a <!DOCTYPE html><html>...</html> structure
       tag :head do
         meta charset: 'utf-8'
 
@@ -218,7 +217,7 @@ class ApplicationController
       tag :body do
         yield
       end
-    end
+    }.html_safe
   end
 end
 
@@ -256,6 +255,28 @@ class MyController < ApplicationController
   end
 end
 ```
+
+##### Using Rails view helpers
+
+We must use the `_` method that render raw content
+
+```ruby
+class HelloController < ApplicationController                 
+  def index                                                 
+    render html: (html do                                     
+      h1 'Hello#h_slice'                                      
+      tag :p, 'Find me in app/controllers/hello_controller.rb'
+                                                              
+      _ helpers.link_to('oi')                                 
+                                                              
+      _ (helpers.form_for 'user' do |f|                       
+        f.text_field('name')                                  
+      end)                                                    
+    end)                                                      
+  end                                                                                                             
+end                                                           
+                                                
+``` 
 
 ## Development
 
