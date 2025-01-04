@@ -1,38 +1,77 @@
 # frozen_string_literal: true
 
-require "erubi"
-# require 'html_slice'
-require_relative "../lib/html_slice"
+require "byebug"
 require "benchmark"
+require "erubi"
+require "html_slice"
+require "papercraft"
+require "phlex"
+require "markaby"
 
-module Partials
-  def hello_h1
-    h1 "hello"
-  end
-end
+ANY = 100
 
-class IndexHtml
+class TestHtmlSlice
   include HtmlSlice
-  include Partials
 
   def call
-    html_slice do
-      3.times do
-        h1 "Benchmark"
-        hello_h1
+    html_layout do
+      ANY.times do
+        div do
+          h1 "Benchmark"
+        end
       end
     end
   end
 end
 
+class TestPapercraft
+  def call
+    Papercraft.html {
+      ANY.times do
+        div do
+          h1 "Benchmark"
+        end
+      end
+    }.render
+  end
+end
+
+class TestMarkaby < Phlex::HTML
+  def call
+    Markaby::Builder.new.html {
+      ANY.times do
+        div do
+          h1 "Benchmark"
+        end
+      end
+    }.to_s
+  end
+end
+
+#Can't make it work outside rails =/
+
+#class TestPhlex < Phlex::HTML
+  #def view_template
+    #ANY.times do
+      #h1 "Benchmark"
+    #end
+  #end
+#end
+
 Benchmark.bm do |x|
+  x.report("papercraft") do
+    TestPapercraft.new.call
+  end
+
+  x.report("markaby") do
+    TestMarkaby.new.call
+  end
+
   x.report("(erubi) parsing an erb string") do
     eval(Erubi::Engine.new("
-<% 3.times do %>
+<% ANY.times do %>
   <h1> Benchmark </h1>
-  <%= eval(Erubi::Engine.new('<h1>hello</h1>').src) %>
-<% end %>
-                          ").src)
+<% end %>").src)
   end
 
   x.report("(erubi) reading and parsing an erb file") do
@@ -40,6 +79,6 @@ Benchmark.bm do |x|
   end
 
   x.report("html_slice") do
-    IndexHtml.new.call
+    TestHtmlSlice.new.call
   end
 end

@@ -7,3 +7,6 @@ source "https://rubygems.org"
 gem "benchmark"
 gem "erubi"
 gem "html_slice"
+gem "phlex"
+gem 'markaby'
+gem 'papercraft'
