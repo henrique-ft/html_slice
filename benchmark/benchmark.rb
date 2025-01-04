@@ -36,7 +36,7 @@ class TestPapercraft
   end
 end
 
-class TestMarkaby < Phlex::HTML
+class TestMarkaby
   def call
     Markaby::Builder.new.html {
       ANY.times do
