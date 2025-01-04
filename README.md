@@ -280,6 +280,16 @@ end
                                                 
 ``` 
 
+## Benchmarks
+
+Rendering a `div` with `h1` 100 times (cpu time):
+``` 
+                                            user     system      total        real
+1. html_slice                               0.000387   0.000000   0.000387 (0.000387)
+2. papercraft                               0.000888   0.000000   0.000888 (0.000884)
+3. markaby                                  0.001837   0.000000   0.001837 (0.001838)
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
