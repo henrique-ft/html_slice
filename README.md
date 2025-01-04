@@ -284,10 +284,10 @@ end
 
 Rendering a `div` with `h1` 100 times (cpu time):
 ``` 
-                                            user     system      total        real
-1. html_slice                               0.000387   0.000000   0.000387 (0.000387)
-2. papercraft                               0.000888   0.000000   0.000888 (0.000884)
-3. markaby                                  0.001837   0.000000   0.001837 (0.001838)
+                                             user     system      total        real
+html_slice                               0.000390   0.000000   0.000390 (  0.000390)
+papercraft                               0.000495   0.000077   0.000572 (  0.000567)
+markaby                                  0.001794   0.000000   0.001794 (  0.001795)
 ```
 
 ## Development
