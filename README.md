@@ -60,7 +60,7 @@ class HelloView
       text
       div do
         _ '<b> some raw html </b>'
-      end 
+      end
     end
   end
 
@@ -114,7 +114,7 @@ class HelloView
       text # @html_slice[:default] << '<p>Lorem ipsum dolor sit amet</p>'
       div do
         _ '<b> some raw html </b>'
-      end 
+      end
     end
 
     html_slice :some_key do # @html_slice[:some_key] = ''
@@ -122,7 +122,7 @@ class HelloView
       text # @html_slice[:some_key] << '<p>Lorem ipsum dolor sit amet</p>'
       div do
         _ '<b> some raw html </b>'
-      end 
+      end
     end
   end
 
@@ -146,7 +146,7 @@ HelloView.new.to_html
 class ApplicationController
   include HtmlSlice
 
-  def html(&block) 
+  def html(&block)
     html_slice(&block).html_safe
   end
 end
@@ -263,31 +263,33 @@ end
 We must use the `_` method that render raw content
 
 ```ruby
-class HelloController < ApplicationController                 
-  def index                                                 
-    render html: (html do                                     
-      h1 'Hello#h_slice'                                      
+class HelloController < ApplicationController
+  def index
+    render html: (html do
+      h1 'Hello#h_slice'
       tag :p, 'Find me in app/controllers/hello_controller.rb'
-                                                              
-      _ helpers.link_to('oi')                                 
-                                                              
-      _ (helpers.form_for 'user' do |f|                       
-        f.text_field('name')                                  
-      end)                                                    
-    end)                                                      
-  end                                                                                                             
-end                                                           
-                                                
-``` 
+
+      _ helpers.link_to('oi')
+
+      _ (helpers.form_for 'user' do |f|
+        f.text_field('name')
+      end)
+    end)
+  end
+end
+
+```
 
 ## Benchmarks
 
-Rendering a `div` with `h1` 100 times (cpu time):
-``` 
-                                             user     system      total        real
-html_slice                               0.000390   0.000000   0.000390 (  0.000390)
-papercraft                               0.000495   0.000077   0.000572 (  0.000567)
-markaby                                  0.001794   0.000000   0.001794 (  0.001795)
+Rendering a `div` with `h1` and a unique value 100,000 times (cpu time):
+```
+                user     system      total        real
+erubi       0.865151   0.005151   0.870302 (  0.870701)
+markaby     0.785023   0.004450   0.789473 (  0.789531)
+papercraft  0.215119   0.001360   0.216479 (  0.216479)
+phlex       0.146289   0.002243   0.148532 (  0.148719)
+html_slice  0.186992   0.000697   0.187689 (  0.187692)
 ```
 
 ## Development
