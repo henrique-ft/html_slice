@@ -3,18 +3,69 @@
 require "benchmark"
 require "byebug"
 require "erubi"
+require "haml"
+require "slim"
 require "markaby"
 require "papercraft"
 require "phlex"
 require "html_slice"
 
+require_relative "context"
+
 class RunErubi
+  template_code = "<div><h1><%= text %></h1></div>"
+  @@context = Context.new
+  @@context.instance_eval %{
+    def run_erubi; #{Erubi::Engine.new(template_code).src}; end
+  }
+
   def initialize text = "Benchmark"
     @text = text
   end
 
   def call
-    eval Erubi::Engine.new("<div><h1><%= @text %></h1></div>").src
+    @@context.text = @text
+    @@context.run_erubi
+  end
+end
+
+class RunHaml
+  template_code = <<~EOL
+    %div
+      %h1
+        = text
+  EOL
+  @@context = Context.new
+  @@context.instance_eval %{
+    def run_haml; #{Haml::Engine.new.call(template_code)}; end
+  }
+
+  def initialize text = "Benchmark"
+    @text = text
+  end
+
+  def call
+    @@context.text = @text
+    @@context.run_haml
+  end
+end
+
+class RunSlim
+  template_code = <<~EOL
+    h1 = text
+  EOL
+  @@context = Context.new
+  @@context.instance_eval %{
+    def run_slim; #{Slim::Engine.new.call(template_code)}; end
+  }
+
+  def initialize text = "Benchmark"
+    @text = text
+  end
+
+  def call
+    @@context.text = @text
+    @@context.run_slim
   end
 end
 
@@ -79,6 +130,14 @@ ITERATIONS = 100_000
 Benchmark.bm do |x|
   x.report("erubi") do
     ITERATIONS.times { |count| RunErubi.new("Benchmark #{count}").call }
+  end
+
+  x.report("haml") do
+    ITERATIONS.times { |count| RunHaml.new("Benchmark #{count}").call }
+  end
+
+  x.report("slim") do
+    ITERATIONS.times { |count| RunSlim.new("Benchmark #{count}").call }
   end
 
   x.report("markaby") do
