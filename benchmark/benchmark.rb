@@ -7,7 +7,9 @@ require "haml"
 require "slim"
 require "markaby"
 require "papercraft"
+require "papercraft/version"
 require "phlex"
+require "phlex/version"
 require "html_slice"
 
 require_relative "context"
@@ -128,31 +130,31 @@ end
 ITERATIONS = 100_000
 
 Benchmark.bm do |x|
-  x.report("erubi") do
+  x.report("erubi v#{Erubi::VERSION}") do
     ITERATIONS.times { |count| RunErubi.new("Benchmark #{count}").call }
   end
 
-  x.report("haml") do
+  x.report("haml v#{Haml::VERSION}") do
     ITERATIONS.times { |count| RunHaml.new("Benchmark #{count}").call }
   end
 
-  x.report("slim") do
+  x.report("slim v#{Slim::VERSION}") do
     ITERATIONS.times { |count| RunSlim.new("Benchmark #{count}").call }
   end
 
-  x.report("markaby") do
+  x.report("markaby v#{Markaby::VERSION}") do
     ITERATIONS.times { |count| RunMarkaby.new("Benchmark #{count}").call }
   end
 
-  x.report("papercraft") do
+  x.report("papercraft v#{Papercraft::VERSION}") do
     ITERATIONS.times { |count| RunPapercraft.new("Benchmark #{count}").call }
   end
 
-  x.report("phlex") do
+  x.report("phlex v#{Phlex::VERSION}") do
     ITERATIONS.times { |count| RunPhlex.new("Benchmark #{count}").call }
   end
 
-  x.report("html_slice") do
+  x.report("html_slice v#{HtmlSlice::VERSION}") do
     ITERATIONS.times { |count| RunHtmlSlice.new("Benchmark #{count}").call }
   end
 end
