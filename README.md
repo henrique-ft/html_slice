@@ -138,6 +138,45 @@ HelloView.new.to_html
 
 ⚠️ Important: Tag methods and our instance methods that use the tag methods must only be called inside an `html_slice` block
 
+### Roda example
+
+```ruby
+class App < Roda                           
+  include HtmlSlice                        
+                                           
+  def layout                               
+    html_layout do                         
+      yield                                
+    end                                    
+  end                                      
+                                             
+  plugin :autoload_hash_branches           
+  autoload_hash_branch_dir('./app/routes') 
+                                           
+  route(&:hash_branches)                   
+end     
+
+# app/routes/foods
+
+class App                              
+  hash_branch('foods') do |r|          
+    r.is do                            
+      r.get do                         
+        @foods = Food.order(:name).all 
+                                       
+        layout do                      
+          ul do                        
+            @foods.each do |food|      
+              li food.inspect          
+            end                        
+          end                          
+        end                            
+      end                              
+    end                                
+  end                                  
+end                                    
+
+```                                   
 
 ### Rails examples
 
