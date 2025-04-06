@@ -148,6 +148,25 @@ RSpec.describe HtmlSlice do
       result = html_generator.html_slice
       expect(result).to include("<link rel='stylesheet' href='styles.css' data-test-id='1234'/>")
     end
+
+    describe "scaping html" do
+      it do
+        html_generator.html_slice do
+          div "background-color: #gray;"
+          div "alert('hello spec')"
+        end
+        result = html_generator.html_slice
+        expect(result).to include("<div>background-color: #gray;</div><div>alert(&#39;hello spec&#39;)</div>")
+      end
+      it "dont scape html for 'style' and 'script' tags" do
+        html_generator.html_slice do
+          style "background-color: #gray;"
+          script "alert('hello spec')"
+        end
+        result = html_generator.html_slice
+        expect(result).to include("<style>background-color: #gray;</style><script>alert('hello spec')</script>")
+      end
+    end
   end
 end
 # rubocop:enable Metrics/BlockLength

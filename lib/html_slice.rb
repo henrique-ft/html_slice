@@ -5,65 +5,19 @@ require "cgi"
 
 module HtmlSlice
   class Error < StandardError; end
-  # HTML as a first-class citizen in ruby code
-  # Faster than ERB.
 
   TAGS = %i[
-    div
-    title
-    embed
-    meta
-    br
-    a
-    em
-    b
-    i
-    ul
-    ol
-    li
-    img
-    table
-    tbody
-    thead
-    tr
-    th
-    td
-    form
-    input
-    button
-    link
-    h1
-    h2
-    h3
-    h4
-    h5
-    h6
-    hr
-    span
-    label
-    iframe
-    template
-    main
-    footer
-    aside
-    source
-    section
-    small
-    script
-    nav
-    area
+    div title embed meta br a em b i ul ol li img table tbody thead tr th td
+    form input button link h1 h2 h3 h4 h5 h6 hr span label iframe template main
+    footer aside source section small nav area
   ].freeze
 
   EMPTY_TAGS = %i[
-    area
-    br
-    embed
-    hr
-    img
-    input
-    link
-    meta
-    source
+    area br embed hr img input link meta source
+  ].freeze
+
+  TAGS_WITHOUT_HTML_ESCAPE = %i[
+    style script
   ].freeze
 
   DEFAULT_SLICE = :default
@@ -78,23 +32,30 @@ module HtmlSlice
 
   def html_slice(html_slice_current_id = DEFAULT_SLICE, wrap: ["", ""], &block)
     @html_slice_current_id = html_slice_current_id
+    @html_slice ||= {}
+
     if block
-      @html_slice ||= {}
       @html_slice[@html_slice_current_id] = wrap[0].dup
       instance_eval(&block)
       @html_slice[@html_slice_current_id] << wrap[1]
-    else
-      @html_slice[@html_slice_current_id] || ""
     end
+
+    @html_slice[@html_slice_current_id] || ""
   end
 
   TAGS.each do |name|
-    define_method name do |*args, &block|
-      tag(name, *args, &block)
+    define_method(name) { |*args, &block| tag(name, *args, &block) }
+  end
+
+  TAGS_WITHOUT_HTML_ESCAPE.each do |name|
+    define_method(name) do |*args, &block|
+      content, attributes = parse_html_tag_arguments(args, escape: false)
+      generate_and_append_html_tag(name, content, attributes, &block)
     end
   end
 
   def _(content)
+    ensure_html_slice
     @html_slice[@html_slice_current_id] << content.to_s
   end
 
@@ -105,26 +66,30 @@ module HtmlSlice
 
   private
 
-  def parse_html_tag_arguments(args)
-    content = ""
+  def ensure_html_slice
+    @html_slice ||= {}
+    @html_slice_current_id ||= DEFAULT_SLICE
+    @html_slice[@html_slice_current_id] ||= +""
+  end
+
+  def parse_html_tag_arguments(args, escape: true)
+    content = +""
     attributes = {}
 
-    first_argument = args.shift
-    if first_argument.is_a?(String)
-      content = ::CGI.escapeHTML(first_argument)
+    first = args.shift
+    if first.is_a?(String)
+      content = escape ? CGI.escapeHTML(first) : first
       attributes = args.pop || {}
-    elsif first_argument.is_a?(Hash)
-      attributes = first_argument
+    elsif first.is_a?(Hash)
+      attributes = first
     end
 
     [content, attributes]
   end
 
   def generate_and_append_html_tag(tag_name, content, attributes, &block)
+    ensure_html_slice
     open_tag = build_html_open_tag(tag_name, attributes)
-    @html_slice ||= {}
-    @html_slice_current_id ||= DEFAULT_SLICE
-    @html_slice[@html_slice_current_id] ||= +""
 
     if block
       @html_slice[@html_slice_current_id] << open_tag << ">"
@@ -138,10 +103,12 @@ module HtmlSlice
   end
 
   def build_html_open_tag(tag_name, attributes)
-    open_tag = "<#{tag_name}"
-    attributes.each do |key, value|
-      open_tag << " #{key.to_s.tr("_", "-")}='#{value}'"
-    end
-    open_tag
+    return "<#{tag_name}" if attributes.empty?
+
+    attr_string = attributes.map do |key, value|
+      " #{key.to_s.tr("_", "-")}='#{value}'"
+    end.join
+
+    "<#{tag_name}#{attr_string}"
   end
 end
