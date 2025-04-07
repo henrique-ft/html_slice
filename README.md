@@ -321,14 +321,14 @@ end
 
 ## Benchmarks
 
-Rendering a `div` with `h1` and a unique value 100,000 times (cpu time):
+Rendering 5000 `h1` with attributes 100 times (cpu time):
 ```
                 user     system      total        real
-erubi       0.865151   0.005151   0.870302 (  0.870701)
-markaby     0.785023   0.004450   0.789473 (  0.789531)
-papercraft  0.215119   0.001360   0.216479 (  0.216479)
-phlex       0.146289   0.002243   0.148532 (  0.148719)
-html_slice  0.186992   0.000697   0.187689 (  0.187692)
+phlex       0.868696   0.007997   0.876693 (  0.876815)
+papercraft  2.245758   0.003999   2.249757 (  2.249918)
+html_slice  2.570552   0.002986   2.573538 (  2.575154)
+markaby    27.210358   0.081713  27.292071 ( 27.299257)
+
 ```
 
 ## Development
