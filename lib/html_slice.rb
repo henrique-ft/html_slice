@@ -14,11 +14,11 @@ module HtmlSlice
 
   EMPTY_TAGS = %i[
     area br embed hr img input link meta source
-  ].freeze
+  ].to_set.freeze
 
   TAGS_WITHOUT_HTML_ESCAPE = %i[
     style script
-  ].freeze
+  ].to_set.freeze
 
   DEFAULT_SLICE = :default
 
@@ -35,12 +35,14 @@ module HtmlSlice
     @html_slice ||= {}
 
     if block
-      @html_slice[@html_slice_current_id] = wrap[0].dup
+      buffer = String.new
+      buffer << wrap[0]
+      @html_slice[@html_slice_current_id] = buffer
       instance_eval(&block)
-      @html_slice[@html_slice_current_id] << wrap[1]
+      buffer << wrap[1]
     end
 
-    @html_slice[@html_slice_current_id] || ""
+    (@html_slice[@html_slice_current_id] || "").to_s
   end
 
   TAGS.each do |name|
@@ -69,16 +71,16 @@ module HtmlSlice
   def ensure_html_slice
     @html_slice ||= {}
     @html_slice_current_id ||= DEFAULT_SLICE
-    @html_slice[@html_slice_current_id] ||= +""
+    @html_slice[@html_slice_current_id] ||= String.new
   end
 
   def parse_html_tag_arguments(args, escape: true)
-    content = +""
+    content = ""
     attributes = {}
 
     first = args.shift
     if first.is_a?(String)
-      content = escape ? CGI.escapeHTML(first) : first
+      content = escape && !first.empty? ? CGI.escapeHTML(first) : first
       attributes = args.pop || {}
     elsif first.is_a?(Hash)
       attributes = first
@@ -89,26 +91,23 @@ module HtmlSlice
 
   def generate_and_append_html_tag(tag_name, content, attributes, &block)
     ensure_html_slice
-    open_tag = build_html_open_tag(tag_name, attributes)
+    buffer = @html_slice[@html_slice_current_id]
+    buffer << "<" << tag_name.to_s
+
+    unless attributes.empty?
+      attributes.each do |key, value|
+        buffer << " " << key.to_s.tr("_", "-") << "='" << value.to_s << "'"
+      end
+    end
 
     if block
-      @html_slice[@html_slice_current_id] << open_tag << ">"
+      buffer << ">"
       instance_eval(&block)
-      @html_slice[@html_slice_current_id] << "</#{tag_name}>"
+      buffer << "</" << tag_name.to_s << ">"
     elsif content.empty? && EMPTY_TAGS.include?(tag_name)
-      @html_slice[@html_slice_current_id] << open_tag << "/>"
+      buffer << "/>"
     else
-      @html_slice[@html_slice_current_id] << open_tag << ">" << content << "</#{tag_name}>"
+      buffer << ">" << content << "</" << tag_name.to_s << ">"
     end
-  end
-
-  def build_html_open_tag(tag_name, attributes)
-    return "<#{tag_name}" if attributes.empty?
-
-    attr_string = attributes.map do |key, value|
-      " #{key.to_s.tr("_", "-")}='#{value}'"
-    end.join
-
-    "<#{tag_name}#{attr_string}"
   end
 end
