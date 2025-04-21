@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.2.3] - 2025-04-21
+
+- Improve performance
+
 ## [0.2.2] - 2025-04-06
 
 - Remove html escape for script and style tags

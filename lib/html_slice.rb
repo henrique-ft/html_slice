@@ -111,4 +111,3 @@ module HtmlSlice
     end
   end
 end
-

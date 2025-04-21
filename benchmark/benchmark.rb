@@ -84,7 +84,7 @@ class RunMarkaby
     Markaby::Builder.new text: @text do
       div do
         (0..TAGS_NUMBER).each do |i|
-          h1 @text, style: 'a', id: i, class: 'c', role: 'd'
+          h1 @text, style: 'a', id: i, class: 'c', role: 'd', data_class: 'something'
         end
       end
     end.to_s
@@ -100,7 +100,7 @@ class RunPapercraft
     Papercraft.html do |text:|
       div do
         (0..TAGS_NUMBER).each do |i|
-          h1 text, style: 'a', id: i, class: 'c', role: 'd'
+          h1 text, style: 'a', id: i, class: 'c', role: 'd', data_class: 'something'
         end
       end
     end.render text: @text
@@ -115,7 +115,7 @@ class RunPhlex < Phlex::HTML
   def view_template
     div do
       (0..TAGS_NUMBER).each do |i|
-        h1(style: 'a', id: i, class: 'c', role: 'd') { @text }
+        h1(style: 'a', id: i, class: 'c', role: 'd', data_class: 'something') { @text }
       end
     end
   end
@@ -132,7 +132,7 @@ class RunHtmlSlice
     html_slice do
       div do
         (0..TAGS_NUMBER).each do |i|
-          h1 @text, style: 'a', id: i, class: 'c', role: 'd'
+          h1 @text, style: 'a', id: i, class: 'c', role: 'd', data_class: 'something'
         end
       end
     end
@@ -140,21 +140,21 @@ class RunHtmlSlice
 end
 
 Benchmark.bm do |x|
-  #x.report("erubi v#{Erubi::VERSION}") do
-    #CALLS_NUMBER.times { |count| RunErubi.new("Benchmark #{count}").call }
-  #end
+  x.report("erubi v#{Erubi::VERSION}") do
+    CALLS_NUMBER.times { |count| RunErubi.new("Benchmark #{count}").call }
+  end
 
-  #x.report("haml v#{Haml::VERSION}") do
-    #CALLS_NUMBER.times { |count| RunHaml.new("Benchmark #{count}").call }
-  #end
+  x.report("haml v#{Haml::VERSION}") do
+    CALLS_NUMBER.times { |count| RunHaml.new("Benchmark #{count}").call }
+  end
 
-  #x.report("slim v#{Slim::VERSION}") do
-    #CALLS_NUMBER.times { |count| RunSlim.new("Benchmark #{count}").call }
-  #end
+  x.report("slim v#{Slim::VERSION}") do
+    CALLS_NUMBER.times { |count| RunSlim.new("Benchmark #{count}").call }
+  end
 
-  #x.report("markaby v#{Markaby::VERSION}") do
-    #CALLS_NUMBER.times { |count| RunMarkaby.new("Benchmark #{count}").call }
-  #end
+  x.report("phlex v#{Phlex::VERSION}") do
+    CALLS_NUMBER.times { |count| RunPhlex.new("Benchmark #{count}").call }
+  end
 
   x.report("html_slice v#{HtmlSlice::VERSION}") do
     CALLS_NUMBER.times { |count| RunHtmlSlice.new("Benchmark #{count}").call }
@@ -164,7 +164,7 @@ Benchmark.bm do |x|
     CALLS_NUMBER.times { |count| RunPapercraft.new("Benchmark #{count}").call }
   end
 
-  x.report("phlex v#{Phlex::VERSION}") do
-    CALLS_NUMBER.times { |count| RunPhlex.new("Benchmark #{count}").call }
+  x.report("markaby v#{Markaby::VERSION}") do
+    CALLS_NUMBER.times { |count| RunMarkaby.new("Benchmark #{count}").call }
   end
 end

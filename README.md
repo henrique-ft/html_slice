@@ -323,12 +323,11 @@ end
 
 Rendering 5000 `h1` with attributes 100 times (cpu time):
 ```
-                user     system      total        real
-phlex       0.868696   0.007997   0.876693 (  0.876815)
-papercraft  2.245758   0.003999   2.249757 (  2.249918)
-html_slice  2.570552   0.002986   2.573538 (  2.575154)
-markaby    27.210358   0.081713  27.292071 ( 27.299257)
-
+                   user       system     total    real
+phlex v1.11.0      0.815566   0.020756   0.836322 (0.836379)
+html_slice v0.2.2  2.577327   0.014989   2.592316 (2.592524)
+papercraft v1.4    2.702237   0.013971   2.716208 (2.716460)
+markaby v0.9.4    27.611695   0.050988  27.662683 (27.664897)
 ```
 
 ## Development
