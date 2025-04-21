@@ -10,7 +10,8 @@ require "papercraft"
 require "papercraft/version"
 require "phlex"
 require "phlex/version"
-require "html_slice"
+#require "html_slice"
+require_relative "../lib/html_slice"
 
 require_relative "context"
 
@@ -139,21 +140,21 @@ class RunHtmlSlice
 end
 
 Benchmark.bm do |x|
-  x.report("erubi v#{Erubi::VERSION}") do
-    CALLS_NUMBER.times { |count| RunErubi.new("Benchmark #{count}").call }
-  end
+  #x.report("erubi v#{Erubi::VERSION}") do
+    #CALLS_NUMBER.times { |count| RunErubi.new("Benchmark #{count}").call }
+  #end
 
-  x.report("haml v#{Haml::VERSION}") do
-    CALLS_NUMBER.times { |count| RunHaml.new("Benchmark #{count}").call }
-  end
+  #x.report("haml v#{Haml::VERSION}") do
+    #CALLS_NUMBER.times { |count| RunHaml.new("Benchmark #{count}").call }
+  #end
 
-  x.report("slim v#{Slim::VERSION}") do
-    CALLS_NUMBER.times { |count| RunSlim.new("Benchmark #{count}").call }
-  end
+  #x.report("slim v#{Slim::VERSION}") do
+    #CALLS_NUMBER.times { |count| RunSlim.new("Benchmark #{count}").call }
+  #end
 
-  x.report("markaby v#{Markaby::VERSION}") do
-    CALLS_NUMBER.times { |count| RunMarkaby.new("Benchmark #{count}").call }
-  end
+  #x.report("markaby v#{Markaby::VERSION}") do
+    #CALLS_NUMBER.times { |count| RunMarkaby.new("Benchmark #{count}").call }
+  #end
 
   x.report("html_slice v#{HtmlSlice::VERSION}") do
     CALLS_NUMBER.times { |count| RunHtmlSlice.new("Benchmark #{count}").call }
