@@ -35,7 +35,7 @@ module HtmlSlice
     @html_slice ||= {}
 
     if block
-      buffer = String.new(capacity: 2048)
+      buffer = String.new
       buffer << wrap[0]
       @html_slice[@html_slice_current_id] = buffer
       instance_eval(&block)
@@ -71,7 +71,7 @@ module HtmlSlice
   def ensure_html_slice
     @html_slice ||= {}
     @html_slice_current_id ||= DEFAULT_SLICE
-    @html_slice[@html_slice_current_id] ||= String.new(capacity: 1024)
+    @html_slice[@html_slice_current_id] ||= String.new
   end
 
   def parse_html_tag_arguments(args, escape: true)
