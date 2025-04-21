@@ -27,7 +27,6 @@ module HtmlSlice
     html_slice(slice_id, wrap: ["<!DOCTYPE html><html>", "</html>"], &block)
   end
 
-  # Starts or returns an HTML slice buffer
   def html_slice(slice_id = DEFAULT_SLICE, wrap: ["", ""], &block)
     @html_slice_current_id = slice_id
     @html_slice ||= {}
@@ -43,7 +42,6 @@ module HtmlSlice
     @html_slice[slice_id].to_s
   end
 
-  # Define methods for tags without HTML escaping
   TAGS_WITHOUT_HTML_ESCAPE.each do |tag_name|
     name_str = tag_name.to_s.freeze
     define_method(name_str) do |*args, &block|
@@ -52,7 +50,6 @@ module HtmlSlice
     end
   end
 
-  # Define methods for other tags with HTML escaping
   (TAGS - TAGS_WITHOUT_HTML_ESCAPE.to_a).each do |tag_name|
     name_str = tag_name.to_s.freeze
     define_method(name_str) do |*args, &block|
@@ -61,20 +58,17 @@ module HtmlSlice
     end
   end
 
-  # Generic tag method for dynamic tag names
   def tag(tag_name, *args, &block)
     content, attrs = parse_args(args, escape: true)
     render_tag(tag_name.to_s, tag_name, content, attrs, &block)
   end
 
-  # Insert raw text inside a block
   def _(text)
     @html_slice[@html_slice_current_id] << text.to_s
   end
 
   private
 
-  # Parse tag arguments into content and attributes
   def parse_args(args, escape: true)
     content = ""
     attributes = {}
@@ -88,24 +82,19 @@ module HtmlSlice
     [content, attributes]
   end
 
-  # Render an HTML tag into the current slice buffer
   def render_tag(name_str, tag_sym, content, attributes, &block)
-    # Lazy initialize slice buffer
     @html_slice ||= {}
     @html_slice_current_id ||= DEFAULT_SLICE
     @html_slice[@html_slice_current_id] ||= +""
     buffer = @html_slice[@html_slice_current_id]
 
-    # Open tag
     buffer << "<" << name_str
-    # Add attributes
     unless attributes.empty?
       attributes.each do |key, value|
         buffer << " " << key.to_s.tr("_", "-") << "='" << value.to_s << "'"
       end
     end
 
-    # Block content vs self-closing vs normal content
     if block
       buffer << ">"
       instance_exec(&block)
