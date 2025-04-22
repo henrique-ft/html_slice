@@ -14,15 +14,14 @@ module HtmlSlice
 
   EMPTY_TAGS = %i[
     area br embed hr img input link meta source
-  ].to_set.freeze
+  ].freeze
 
   TAGS_WITHOUT_HTML_ESCAPE = %i[
     style script
-  ].to_set.freeze
+  ].freeze
 
   DEFAULT_SLICE = :default
 
-  # Generates a full HTML document with DOCTYPE
   def html_layout(slice_id = DEFAULT_SLICE, &block)
     html_slice(slice_id, wrap: ["<!DOCTYPE html><html>", "</html>"], &block)
   end
@@ -50,7 +49,7 @@ module HtmlSlice
     end
   end
 
-  (TAGS - TAGS_WITHOUT_HTML_ESCAPE.to_a).each do |tag_name|
+  TAGS.each do |tag_name|
     name_str = tag_name.to_s.freeze
     define_method(name_str) do |*args, &block|
       content, attrs = parse_args(args, escape: true)
