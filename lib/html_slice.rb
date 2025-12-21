@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "html_slice/version"
 require "cgi"
 
@@ -88,9 +90,9 @@ module HtmlSlice
 
     buffer << "<" << name_str
     unless attributes.empty?
-      attributes_string = ATTRIBUTE_CACHE[attributes] ||= begin
+      attributes_string = ATTRIBUTE_CACHE[attributes.dup] ||= begin
         attributes.map do |key, value|
-          " " << key.to_s.tr("_", "-") << "='" << value.to_s << "'"
+          " #{key.to_s.tr('_', '-')}='#{value}'"
         end.join
       end
       buffer << attributes_string
@@ -107,4 +109,3 @@ module HtmlSlice
     end
   end
 end
-
