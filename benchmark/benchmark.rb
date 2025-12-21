@@ -84,7 +84,7 @@ class RunMarkaby
     Markaby::Builder.new text: @text do
       div do
         (0..TAGS_NUMBER).each do |i|
-          h1 @text, style: 'a', id: i, class: 'c', role: 'd', data_class: 'something'
+          h1 @text, style: "a#{i}", id: i, class: 'c', role: 'd', data_class: 'something'
         end
       end
     end.to_s
@@ -100,7 +100,7 @@ class RunPapercraft
     Papercraft.html do |text:|
       div do
         (0..TAGS_NUMBER).each do |i|
-          h1 text, style: 'a', id: i, class: 'c', role: 'd', data_class: 'something'
+          h1 text, style: "a#{i}", id: i, class: 'c', role: 'd', data_class: 'something'
         end
       end
     end.render text: @text
@@ -115,7 +115,7 @@ class RunPhlex < Phlex::HTML
   def view_template
     div do
       (0..TAGS_NUMBER).each do |i|
-        h1(style: 'a', id: i, class: 'c', role: 'd', data_class: 'something') { @text }
+        h1(style: "a#{i}", id: i, class: 'c', role: 'd', data_class: 'something') { @text }
       end
     end
   end
@@ -132,7 +132,7 @@ class RunHtmlSlice
     html_slice do
       div do
         (0..TAGS_NUMBER).each do |i|
-          h1 @text, style: 'a', id: i, class: 'c', role: 'd', data_class: 'something'
+          h1 @text, style: "a#{i}", id: i, class: 'c', role: 'd', data_class: 'something'
         end
       end
     end

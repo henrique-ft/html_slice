@@ -14,100 +14,98 @@ module HtmlSlice
 
   EMPTY_TAGS = %i[
     area br embed hr img input link meta source
-  ].to_set.freeze
+  ].freeze
 
   TAGS_WITHOUT_HTML_ESCAPE = %i[
     style script
-  ].to_set.freeze
+  ].freeze
 
   DEFAULT_SLICE = :default
+  ATTRIBUTE_CACHE = {}
 
-  def html_layout(html_slice_current_id = DEFAULT_SLICE, &block)
-    html_slice(
-      html_slice_current_id,
-      wrap: ["<!DOCTYPE html><html>", "</html>"],
-      &block
-    )
+  def html_layout(slice_id = DEFAULT_SLICE, &block)
+    html_slice(slice_id, wrap: ["<!DOCTYPE html><html>", "</html>"], &block)
   end
 
-  def html_slice(html_slice_current_id = DEFAULT_SLICE, wrap: ["", ""], &block)
-    @html_slice_current_id = html_slice_current_id
+  def html_slice(slice_id = DEFAULT_SLICE, wrap: ["", ""], &block)
+    @html_slice_current_id = slice_id
     @html_slice ||= {}
 
-    if block
-      buffer = String.new
+    if block_given?
+      buffer = +""
       buffer << wrap[0]
-      @html_slice[@html_slice_current_id] = buffer
+      @html_slice[slice_id] = buffer
       instance_eval(&block)
       buffer << wrap[1]
     end
 
-    (@html_slice[@html_slice_current_id] || "").to_s
+    @html_slice[slice_id].to_s
   end
 
-  TAGS.each do |name|
-    define_method(name) { |*args, &block| tag(name, *args, &block) }
-  end
-
-  TAGS_WITHOUT_HTML_ESCAPE.each do |name|
-    define_method(name) do |*args, &block|
-      content, attributes = parse_html_tag_arguments(args, escape: false)
-      generate_and_append_html_tag(name, content, attributes, &block)
+  TAGS_WITHOUT_HTML_ESCAPE.each do |tag_name|
+    name_str = tag_name.to_s.freeze
+    define_method(name_str) do |*args, &block|
+      content, attrs = parse_args(args, escape: false)
+      render_tag(name_str, tag_name, content, attrs, &block)
     end
   end
 
-  def _(content)
-    ensure_html_slice
-    @html_slice[@html_slice_current_id] << content.to_s
+  TAGS.each do |tag_name|
+    name_str = tag_name.to_s.freeze
+    define_method(name_str) do |*args, &block|
+      content, attrs = parse_args(args, escape: true)
+      render_tag(name_str, tag_name, content, attrs, &block)
+    end
   end
 
   def tag(tag_name, *args, &block)
-    content, attributes = parse_html_tag_arguments(args)
-    generate_and_append_html_tag(tag_name, content, attributes, &block)
+    content, attrs = parse_args(args, escape: true)
+    render_tag(tag_name.to_s, tag_name, content, attrs, &block)
+  end
+
+  def _(text)
+    @html_slice[@html_slice_current_id] << text.to_s
   end
 
   private
 
-  def ensure_html_slice
-    @html_slice ||= {}
-    @html_slice_current_id ||= DEFAULT_SLICE
-    @html_slice[@html_slice_current_id] ||= String.new
-  end
-
-  def parse_html_tag_arguments(args, escape: true)
+  def parse_args(args, escape: true)
     content = ""
     attributes = {}
-
-    first = args.shift
+    first = args[0]
     if first.is_a?(String)
       content = escape && !first.empty? ? CGI.escapeHTML(first) : first
-      attributes = args.pop || {}
+      attributes = args.size > 1 ? args[-1] : {}
     elsif first.is_a?(Hash)
       attributes = first
     end
-
     [content, attributes]
   end
 
-  def generate_and_append_html_tag(tag_name, content, attributes, &block)
-    ensure_html_slice
+  def render_tag(name_str, tag_sym, content, attributes, &block)
+    @html_slice ||= {}
+    @html_slice_current_id ||= DEFAULT_SLICE
+    @html_slice[@html_slice_current_id] ||= +""
     buffer = @html_slice[@html_slice_current_id]
-    buffer << "<" << tag_name.to_s
 
+    buffer << "<" << name_str
     unless attributes.empty?
-      attributes.each do |key, value|
-        buffer << " " << key.to_s.tr("_", "-") << "='" << value.to_s << "'"
+      attributes_string = ATTRIBUTE_CACHE[attributes.dup] ||= begin
+        attributes.map do |key, value|
+          " #{key.to_s.tr('_', '-')}='#{value}'"
+        end.join
       end
+      buffer << attributes_string
     end
 
-    if block
+    if block_given?
       buffer << ">"
-      instance_eval(&block)
-      buffer << "</" << tag_name.to_s << ">"
-    elsif content.empty? && EMPTY_TAGS.include?(tag_name)
+      instance_exec(&block)
+      buffer << "</#{name_str}>"
+    elsif content.empty? && EMPTY_TAGS.include?(tag_sym)
       buffer << "/>"
     else
-      buffer << ">" << content << "</" << tag_name.to_s << ">"
+      buffer << ">" << content << "</#{name_str}>"
     end
   end
 end
