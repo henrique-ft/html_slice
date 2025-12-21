@@ -140,17 +140,17 @@ class RunHtmlSlice
 end
 
 Benchmark.bm do |x|
-  x.report("erubi v#{Erubi::VERSION}") do
-    CALLS_NUMBER.times { |count| RunErubi.new("Benchmark #{count}").call }
-  end
+  #x.report("erubi v#{Erubi::VERSION}") do
+    #CALLS_NUMBER.times { |count| RunErubi.new("Benchmark #{count}").call }
+  #end
 
-  x.report("haml v#{Haml::VERSION}") do
-    CALLS_NUMBER.times { |count| RunHaml.new("Benchmark #{count}").call }
-  end
+  #x.report("haml v#{Haml::VERSION}") do
+    #CALLS_NUMBER.times { |count| RunHaml.new("Benchmark #{count}").call }
+  #end
 
-  x.report("slim v#{Slim::VERSION}") do
-    CALLS_NUMBER.times { |count| RunSlim.new("Benchmark #{count}").call }
-  end
+  #x.report("slim v#{Slim::VERSION}") do
+    #CALLS_NUMBER.times { |count| RunSlim.new("Benchmark #{count}").call }
+  #end
 
   x.report("phlex v#{Phlex::VERSION}") do
     CALLS_NUMBER.times { |count| RunPhlex.new("Benchmark #{count}").call }
@@ -160,11 +160,11 @@ Benchmark.bm do |x|
     CALLS_NUMBER.times { |count| RunHtmlSlice.new("Benchmark #{count}").call }
   end
 
-  x.report("papercraft v#{Papercraft::VERSION}") do
-    CALLS_NUMBER.times { |count| RunPapercraft.new("Benchmark #{count}").call }
-  end
+  #x.report("papercraft v#{Papercraft::VERSION}") do
+    #CALLS_NUMBER.times { |count| RunPapercraft.new("Benchmark #{count}").call }
+  #end
 
-  x.report("markaby v#{Markaby::VERSION}") do
-    CALLS_NUMBER.times { |count| RunMarkaby.new("Benchmark #{count}").call }
-  end
+  #x.report("markaby v#{Markaby::VERSION}") do
+    #CALLS_NUMBER.times { |count| RunMarkaby.new("Benchmark #{count}").call }
+  #end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative "html_slice/version"
 require "cgi"
 
@@ -21,6 +19,7 @@ module HtmlSlice
   ].freeze
 
   DEFAULT_SLICE = :default
+  ATTRIBUTE_CACHE = {}
 
   def html_layout(slice_id = DEFAULT_SLICE, &block)
     html_slice(slice_id, wrap: ["<!DOCTYPE html><html>", "</html>"], &block)
@@ -30,7 +29,7 @@ module HtmlSlice
     @html_slice_current_id = slice_id
     @html_slice ||= {}
 
-    if block
+    if block_given?
       buffer = +""
       buffer << wrap[0]
       @html_slice[slice_id] = buffer
@@ -89,12 +88,15 @@ module HtmlSlice
 
     buffer << "<" << name_str
     unless attributes.empty?
-      attributes.each do |key, value|
-        buffer << " " << key.to_s.tr("_", "-") << "='" << value.to_s << "'"
+      attributes_string = ATTRIBUTE_CACHE[attributes] ||= begin
+        attributes.map do |key, value|
+          " " << key.to_s.tr("_", "-") << "='" << value.to_s << "'"
+        end.join
       end
+      buffer << attributes_string
     end
 
-    if block
+    if block_given?
       buffer << ">"
       instance_exec(&block)
       buffer << "</#{name_str}>"
