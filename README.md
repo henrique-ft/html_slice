@@ -27,7 +27,7 @@ end
 <%= raw @html_slice[:say_hello] %>
 ```
 
-Generating with the `slice` static method:
+Generating with the `slice` class method:
 ```ruby
 HtmlSlice.slice :pizza do
   h1 "🍕"
@@ -38,7 +38,7 @@ puts HtmlSlice.slice :pizza # <h1>"🍕"</h1>
 
 ## Features
 
-- Can be used anywhere without friction, using the `HtmlSlice.slice` static method. Useful to avoid name pollution in specific contexts.
+- Can be used anywhere without friction, using the `HtmlSlice.slice` class method. Useful to avoid name pollution in specific contexts.
 - When included, generate HTML dynamically in instance scope: unlike Markaby, HtmlSlice `self` points to the class instance that are using it, make easier to reuse code and make abstractions (see https://github.com/markaby/markaby?tab=readme-ov-file#label-A+Note+About+instance_eval).
 - HtmlSlice uses `include` instead of inheritance. This means we can "plug" it in anywhere—Rails controllers, services, Sinatra apps, Roda apps—or create specific view classes if needed.
 - Can be used to generate all application html or only html partials (slices 🍕).
@@ -92,6 +92,7 @@ puts HelloView.new.to_html
 - Tags like div, h1, and ul are dynamically defined as methods, enabling you to structure HTML seamlessly.
 - Tags that are not defined as methods can be generated using the `tag` method (*only the most common tags are dinamically defined as methods, except "p", "head" and "body")
 - Use the `_` method to append raw content to the **@html_slice**.
+- Using the `.slice` class method (without including HtmlSlice), the **@html_slice** is encapsulated and no longer exposed directly.
 
 ### Adding Attributes
 HTML attributes can be added to tags as a hash:
