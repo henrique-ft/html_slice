@@ -178,11 +178,11 @@ class App
         @foods = Food.order(:name).all 
                                        
         layout do                      
-          ul do                        
+          ul {                        
             @foods.each do |food|      
               li food.inspect          
             end                        
-          end                          
+          }                          
         end                            
       end                              
     end                                
