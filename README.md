@@ -4,9 +4,9 @@
 
 # HtmlSlice
 
-Generate reusable html with pure Ruby, in any context
+Generate reusable html with pure Ruby, in any context.
 
-Can be included in any class for build complex views
+Using `include`:
 ```ruby
 class MyController < ApplicationController
   include HtmlSlice
@@ -27,7 +27,7 @@ end
 <%= raw @html_slice[:say_hello] %>
 ```
 
-or used alone
+Generating with the `slice` static method:
 ```ruby
 HtmlSlice.slice :pizza do
   h1 "🍕"
@@ -38,8 +38,8 @@ puts HtmlSlice.slice :pizza # <h1>"🍕"</h1>
 
 ## Features
 
-- Can be used anywhere without friction
-- Generate HTML dynamically in instance scope: unlike Markaby, HtmlSlice `self` points to the class instance that are using it, make easier to reuse code and make abstractions (see https://github.com/markaby/markaby?tab=readme-ov-file#label-A+Note+About+instance_eval).
+- Can be used anywhere without friction, using the `HtmlSlice.slice` static method. Usefull to avoid name pollution in specific contexts.
+- When included, generate HTML dynamically in instance scope: unlike Markaby, HtmlSlice `self` points to the class instance that are using it, make easier to reuse code and make abstractions (see https://github.com/markaby/markaby?tab=readme-ov-file#label-A+Note+About+instance_eval).
 - HtmlSlice uses `include` instead of inheritance. This means we can "plug" it in anywhere—Rails controllers, services, Sinatra apps, Roda apps—or create specific view classes if needed.
 - Can be used to generate all application html or only html partials (slices 🍕).
 - Lightweight, use HtmlSlice without performance penalties.
