@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.2.5] - 2026-04-13
+
+- Implement static methods "HtmlSlice.slice" and "HtmlSlice.layout" for use without context pollution
+
 ## [0.2.4] - 2025-12-21
 
 - Apply attribute cache - improving performance

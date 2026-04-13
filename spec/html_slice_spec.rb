@@ -132,6 +132,53 @@ RSpec.describe HtmlSlice do
     end
   end
 
+  describe "::slice" do
+    it "generates a html slice using the class method" do
+      result = HtmlSlice.slice do
+        div do
+          h1 { _("Class Method Hello") }
+        end
+      end
+      expect(result).to eq("<div><h1>Class Method Hello</h1></div>")
+    end
+
+    it "generates a html slice with a specific ID using the class method" do
+      HtmlSlice.slice :class_slice_id do
+        span { _("Class Slice Content") }
+      end
+      result = HtmlSlice.slice :class_slice_id
+      expect(result).to eq("<span>Class Slice Content</span>")
+    end
+
+    it "applies wrapping using the class method" do
+      result = HtmlSlice.slice wrap: ["<wrapper>", "</wrapper>"] do
+        tag(:p) { _("Wrapped Content") }
+      end
+      expect(result).to eq("<wrapper><p>Wrapped Content</p></wrapper>")
+    end
+  end
+
+  describe "::layout" do
+    it "generates a html layout using the class method" do
+      result = HtmlSlice.layout do
+        tag(:body) do
+          h1 { _("Class Method Layout") }
+        end
+      end
+      expect(result).to eq("<!DOCTYPE html><html><body><h1>Class Method Layout</h1></body></html>")
+    end
+
+    it "generates a html layout with a specific ID using the class method" do
+      HtmlSlice.layout :class_layout_id do
+        tag(:head) do
+          title { _("Class Layout Title") }
+        end
+      end
+      result = HtmlSlice.layout :class_layout_id
+      expect(result).to eq("<!DOCTYPE html><html><head><title>Class Layout Title</title></head></html>")
+    end
+  end
+
   describe "special cases" do
     it "generates a self-closing tag for img" do
       html_generator.html_slice do
