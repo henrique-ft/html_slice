@@ -93,7 +93,7 @@ puts HelloView.new.to_html
 - Tags that are not defined as methods can be generated using the `tag` method (*only the most common tags are dinamically defined as methods, except "p", "head" and "body")
 - Use the `_` method to append raw content to the **@html_slice**.
 
-Using the `.slice` class method (without including HtmlSlice), the **@html_slice** is encapsulated and no longer exposed directly.
+Using the `.slice` class method (without including HtmlSlice), the flow is the same, but **@html_slice** is encapsulated and no longer exposed directly.
 
 ### Adding Attributes
 HTML attributes can be added to tags as a hash:
