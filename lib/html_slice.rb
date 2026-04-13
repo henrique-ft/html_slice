@@ -23,6 +23,16 @@ module HtmlSlice
   DEFAULT_SLICE = :default
   ATTRIBUTE_CACHE = {}
 
+  def self.slice(slice_id = DEFAULT_SLICE, wrap: ["", ""], &block)
+    @class ||= Class.new { include HtmlSlice }.new
+    @class.html_slice(slice_id, wrap: wrap, &block)
+  end
+
+  def self.layout(slice_id = DEFAULT_SLICE, &block)
+    @class ||= Class.new { include HtmlSlice }.new
+    @class.html_layout(slice_id, &block)
+  end
+
   def html_layout(slice_id = DEFAULT_SLICE, &block)
     html_slice(slice_id, wrap: ["<!DOCTYPE html><html>", "</html>"], &block)
   end

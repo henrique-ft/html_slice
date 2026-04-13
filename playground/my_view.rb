@@ -1,22 +1,22 @@
 # frozen_string_literal: true
 
-require "phlex"
+#require "phlex"
 require_relative "../lib/html_slice"
 
-class PhlexView < Phlex::HTML
-  def view_template
-    navbar
-    div do
-      h1(some_thing: "x") { "hello" }
-    end
-  end
+#class PhlexView < Phlex::HTML
+  #def view_template
+    #navbar
+    #div do
+      #h1(some_thing: "x") { "hello" }
+    #end
+  #end
 
-  def navbar
-    ul do
-      li { "hey" }
-    end
-  end
-end
+  #def navbar
+    #ul do
+      #li { "hey" }
+    #end
+  #end
+#end
 
 class HtmlSliceView
   include HtmlSlice
@@ -37,5 +37,12 @@ class HtmlSliceView
   end
 end
 
-puts HtmlSliceView.new.call
-puts PhlexView.new.call
+#puts HtmlSliceView.new.call
+#puts PhlexView.new.call
+
+# Contained version
+HtmlSlice.slice do
+  h1 'hey'
+end
+
+puts(HtmlSlice.slice)
