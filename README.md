@@ -305,7 +305,7 @@ papercraft-3-2-1   714MB
 markaby-0.9.4      *My machine was unable to complete
 ```
 
-**One class including HtmlSlice and responsible for generate html, instead of create components instances*
+**One class including HtmlSlice and responsible for generate html, instead of create html components as a class instances*
 
 ## Development
 
