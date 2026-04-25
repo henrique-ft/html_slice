@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
-require "memory_profiler"
+require "benchmark/memory"
 require "byebug"
+require "erubi"
+require "haml"
+require "slim"
 require "markaby"
 require "papercraft"
 require "papercraft/version"
@@ -12,8 +15,62 @@ require_relative "../lib/html_slice"
 
 require_relative "context"
 
-CALLS_NUMBER = 100
-TAGS_NUMBER = 5000
+CALLS_NUMBER = 200
+TAGS_NUMBER = 200
+
+class RunErubi
+  template_code = File.read('templates/erubi.erb')
+  @@context = Context.new
+  @@context.instance_eval %{
+    TAGS_NUMBER=#{TAGS_NUMBER}
+    def run_erubi; #{Erubi::Engine.new(template_code).src}; end
+  }
+
+  def initialize text = "Benchmark"
+    @text = text
+  end
+
+  def call
+    @@context.text = @text
+    @@context.run_erubi
+  end
+end
+
+class RunHaml
+  template_code = File.read('templates/haml.haml')
+  @@context = Context.new
+  @@context.instance_eval %{
+    TAGS_NUMBER=#{TAGS_NUMBER}
+    def run_haml; #{Haml::Engine.new.call(template_code)}; end
+  }
+
+  def initialize text = "Benchmark"
+    @text = text
+  end
+
+  def call
+    @@context.text = @text
+    @@context.run_haml
+  end
+end
+
+class RunSlim
+  template_code = File.read('templates/slim.slim')
+  @@context = Context.new
+  @@context.instance_eval %{
+    TAGS_NUMBER=#{TAGS_NUMBER}
+    def run_slim; #{Slim::Engine.new.call(template_code)}; end
+  }
+
+  def initialize text = "Benchmark"
+    @text = text
+  end
+
+  def call
+    @@context.text = @text
+    @@context.run_slim
+  end
+end
 
 class RunMarkaby
   def initialize text = "Benchmark"
@@ -79,47 +136,22 @@ class RunHtmlSlice
   end
 end
 
-p "phlex v#{Phlex::VERSION}"
-report = MemoryProfiler.report do
-  CALLS_NUMBER.times { |count| RunPhlex.new("Benchmark #{count}").call }
-end
-report.pretty_print
 
-p "html_slice v#{HtmlSlice::VERSION}"
-report = MemoryProfiler.report do
-  CALLS_NUMBER.times { |count| RunHtmlSlice.new("Benchmark #{count}").call }
-end
-report.pretty_print
-
-p "html_slice (singleton) v#{HtmlSlice::VERSION}"
-class RunHtmlSlice
-  include HtmlSlice
-
-  def call
-    CALLS_NUMBER.times { |count|
-      html_slice do
-        div do
-          (0..TAGS_NUMBER).each do |i|
-            h1 count, style: "a#{i}", id: i, class: 'c', role: 'd', data_class: 'something'
-          end
-        end
-      end
-    }
+Benchmark.memory do |x|
+  x.report("erubi v#{Erubi::VERSION}") do
+    CALLS_NUMBER.times { |count| RunErubi.new("Benchmark #{count}").call }
   end
-end
-report = MemoryProfiler.report do
-  RunHtmlSlice.new.call
-end
-report.pretty_print
 
-"papercraft v#{Papercraft::VERSION}"
-report = MemoryProfiler.report do
-  CALLS_NUMBER.times { |count| RunPapercraft.new("Benchmark #{count}").call }
-end
-report.pretty_print
+  x.report("html_slice v#{HtmlSlice::VERSION}") do
+    CALLS_NUMBER.times { |count| RunHtmlSlice.new("Benchmark #{count}").call }
+  end
 
-p "markaby v#{Markaby::VERSION}"
-report = MemoryProfiler.report do
-  CALLS_NUMBER.times { |count| RunMarkaby.new("Benchmark #{count}").call }
+  x.report("phlex v#{Phlex::VERSION}") do
+    CALLS_NUMBER.times { |count| RunPhlex.new("Benchmark #{count}").call }
+  end
+
+  x.report("papercraft v#{Papercraft::VERSION}") do
+    CALLS_NUMBER.times { |count| RunPapercraft.new("Benchmark #{count}").call }
+  end
+  x.compare!
 end
-report.pretty_print

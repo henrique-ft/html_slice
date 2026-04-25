@@ -15,13 +15,14 @@ require_relative "../lib/html_slice"
 
 require_relative "context"
 
-CALLS_NUMBER = 100
-TAGS_NUMBER = 5000
+CALLS_NUMBER = 1000
+TAGS_NUMBER = 500
 
 class RunErubi
-  template_code = "<div><h1><%= text %></h1></div>"
+  template_code = File.read('templates/erubi.erb')
   @@context = Context.new
   @@context.instance_eval %{
+    TAGS_NUMBER=#{TAGS_NUMBER}
     def run_erubi; #{Erubi::Engine.new(template_code).src}; end
   }
 
@@ -36,13 +37,10 @@ class RunErubi
 end
 
 class RunHaml
-  template_code = <<~EOL
-    %div
-      %h1
-        = text
-  EOL
+  template_code = File.read('templates/haml.haml')
   @@context = Context.new
   @@context.instance_eval %{
+    TAGS_NUMBER=#{TAGS_NUMBER}
     def run_haml; #{Haml::Engine.new.call(template_code)}; end
   }
 
@@ -57,11 +55,10 @@ class RunHaml
 end
 
 class RunSlim
-  template_code = <<~EOL
-    h1 = text
-  EOL
+  template_code = File.read('templates/slim.slim')
   @@context = Context.new
   @@context.instance_eval %{
+    TAGS_NUMBER=#{TAGS_NUMBER}
     def run_slim; #{Slim::Engine.new.call(template_code)}; end
   }
 
@@ -144,14 +141,6 @@ Benchmark.bm do |x|
     CALLS_NUMBER.times { |count| RunErubi.new("Benchmark #{count}").call }
   end
 
-  x.report("haml v#{Haml::VERSION}") do
-    CALLS_NUMBER.times { |count| RunHaml.new("Benchmark #{count}").call }
-  end
-
-  x.report("slim v#{Slim::VERSION}") do
-    CALLS_NUMBER.times { |count| RunSlim.new("Benchmark #{count}").call }
-  end
-
   x.report("html_slice v#{HtmlSlice::VERSION}") do
     CALLS_NUMBER.times { |count| RunHtmlSlice.new("Benchmark #{count}").call }
   end
@@ -162,9 +151,5 @@ Benchmark.bm do |x|
 
   x.report("papercraft v#{Papercraft::VERSION}") do
     CALLS_NUMBER.times { |count| RunPapercraft.new("Benchmark #{count}").call }
-  end
-
-  x.report("markaby v#{Markaby::VERSION}") do
-    CALLS_NUMBER.times { |count| RunMarkaby.new("Benchmark #{count}").call }
   end
 end
