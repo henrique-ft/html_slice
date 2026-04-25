@@ -97,13 +97,13 @@ class RunPapercraft
   end
 
   def call
-    Papercraft.html do |text:|
+    Papercraft.html do
       div do
         (0..TAGS_NUMBER).each do |i|
-          h1 text, style: "a#{i}", id: i, class: 'c', role: 'd', data_class: 'something'
+          h1 @text, style: "a#{i}", id: i, class: 'c', role: 'd', data_class: 'something'
         end
       end
-    end.render text: @text
+    end
   end
 end
 
@@ -152,12 +152,12 @@ Benchmark.bm do |x|
     CALLS_NUMBER.times { |count| RunSlim.new("Benchmark #{count}").call }
   end
 
-  x.report("phlex v#{Phlex::VERSION}") do
-    CALLS_NUMBER.times { |count| RunPhlex.new("Benchmark #{count}").call }
-  end
-
   x.report("html_slice v#{HtmlSlice::VERSION}") do
     CALLS_NUMBER.times { |count| RunHtmlSlice.new("Benchmark #{count}").call }
+  end
+
+  x.report("phlex v#{Phlex::VERSION}") do
+    CALLS_NUMBER.times { |count| RunPhlex.new("Benchmark #{count}").call }
   end
 
   x.report("papercraft v#{Papercraft::VERSION}") do

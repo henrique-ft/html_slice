@@ -4,8 +4,6 @@ source "https://rubygems.org"
 
 # gem "rails"
 
-gem "benchmark"
-gem "byebug"
 gem "erubi"
 gem "slim"
 gem "haml"
@@ -14,3 +12,7 @@ gem "markaby"
 gem "ostruct"
 gem "papercraft"
 gem "phlex"
+
+gem "memory_profiler"
+gem "benchmark"
+gem "byebug"
