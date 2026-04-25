@@ -282,7 +282,7 @@ end
 
 Ruby `v3.4.0`
 
-Rendering 5000 `<h1>` with attributes 100 times:
+Rendering 500 `<h1>` with attributes 1000 times:
 
 ### CPU Time
 
