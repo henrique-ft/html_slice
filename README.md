@@ -256,61 +256,6 @@ end
 <%= raw @html_slice[:say_hello] %>
 ```
 
-##### Rendering entire html pages with `html_layout`:
-```ruby
-class ApplicationController
-  include HtmlSlice
-
-  def layout
-    html_layout { # Same as html_slice but wrap the content in a <!DOCTYPE html><html>...</html> structure
-      tag :head do
-        meta charset: 'utf-8'
-
-        custom_head
-      end
-
-      tag :body do
-        yield
-      end
-    }.html_safe
-  end
-end
-
-# Imagine a Rails controller
-class MyController < ApplicationController
-  before_action :set_items
-
-  def index
-    render html: (layout do
-      h1 'hello world'
-
-      div class: 'to-do' do
-        to_do_list
-      end
-    end)
-  end
-  # "<!DOCTYPE html><html><head><meta charset='utf-8'/><title>Hello HtmlSlice</title></head><body><h1>hello world</h1><div class='to-do'><ul><li>Clean the house</li><li>Study Ruby</li><li>Play sports</li></ul></div></body></html>"
-
-  def custom_head
-    title 'Hello HtmlSlice'
-  end
-
-  private
-
-  def to_do_list
-    ul do
-      @items.each do |item|
-        li item
-      end
-    end
-  end
-
-  def set_items
-    @items ||= ['Clean the house', 'Study Ruby', 'Play sports']
-  end
-end
-```
-
 ##### Using Rails view helpers
 
 We must use the `_` method that render raw content
