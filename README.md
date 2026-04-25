@@ -335,14 +335,31 @@ end
 
 ## Benchmarks
 
-Rendering 5000 `h1` with attributes 100 times (cpu time):
+Ruby `v3.4.0`
+
+Rendering 5000 `<h1>` with attributes 100 times:
+
+### CPU Time
+
+less is better
 ```
                    user       system     total    real
-phlex v1.11.0      0.919754   0.002742   0.922496 (0.922507)
-html_slice v0.2.4  1.557618   0.014043   1.571661 (1.571756)
-papercraft v1.4    2.730733   0.018858   2.749591 (2.749635)
-markaby v0.9.4    27.948376   0.066793  28.015169 (28.019518)
+html_slice v0.2.5  1.665166   0.003030   1.668196 (1.571756)
+papercraft v1.4    4.739524   0.007999   4.747523 (4.747961)
+phlex v1.11.0      7.585179   0.035985   7.621164 (7.621516)
+markaby v0.9.4    28.476397   0.046999  28.523396 (28.525001)
 ```
+
+### Memory usage
+less is better
+```
+html_slice-0.2.5 * 126MB
+html_slice-0.2.5   277MB
+phlex-2.4.1        628MB
+papercraft-3-2-1   714MB
+```
+
+**One class including HtmlSlice and responsible for generate html, instead of create components instances*
 
 ## Development
 
