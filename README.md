@@ -302,6 +302,7 @@ html_slice-0.2.5 * 126MB
 html_slice-0.2.5   277MB
 phlex-2.4.1        628MB
 papercraft-3-2-1   714MB
+markaby-0.9.4      *My machine was unable to complete
 ```
 
 **One class including HtmlSlice and responsible for generate html, instead of create components instances*
