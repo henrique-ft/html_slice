@@ -48,13 +48,15 @@ puts HtmlSlice.slice :pizza # <h1>"🍕"</h1>
 
 ### ➰ Flexibility
 
-- Unlike Phlex, HtmlSlice uses `include` instead of inheritance. This means we can "plug" it in anywhere—scripts, Rails controllers, services, helpers, Sinatra apps, Roda apps—or create specific view / partial classes if needed.
-- Can be used to generate all application html or just partials (slices 🍕) alongside `.erb` files.
+- Unlike `Phlex`, `HtmlSlice` uses `include` instead of inheritance. This means we can "plug" it in anywhere—scripts, Rails controllers, services, helpers, Sinatra apps, Roda apps—or create specific view / partial classes if needed.
+- Better for partials (slices 🍕) alongside `.erb` files, but can be used to generate all application HTML.
 - If you don't like the idea of including HTML methods in some contexts, we can use the `HtmlSlice.slice` class method.
+- 🚂 Rails helpers integration with `include HtmlSlice::Rails` 
 
 ### 🛡️ Security
 - Escapes HTML content to prevent XSS vulnerabilities.
 - Easier to write isolated unit tests.
+- Produce valid, safe HTML (impossible to forget to close an HTML tag)
 
 ## Installation
 
@@ -68,15 +70,15 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-Include HtmlSlice in any Ruby class to generate HTML dynamically.
+Include `HtmlSlice` in any Ruby class to generate HTML dynamically.
 
 ```ruby
 require 'html_slice'
 
-class HelloView
+class HelloWorld
   include HtmlSlice
 
-  def to_html
+  def say
     html_slice do
       h1 'hello world'
       text
@@ -93,7 +95,7 @@ class HelloView
   end
 end
 
-puts HelloView.new.to_html
+puts HelloWorld.new.say
 # <h1>hello world</h1><p>Lorem ipsum dolor sit amet</p><div><b> some raw html </b></div>
 ```
 
@@ -104,7 +106,7 @@ puts HelloView.new.to_html
 - Tags that are not defined as methods can be generated using the `tag` method (*only the most common tags are dinamically defined as methods, except "p", "head" and "body")
 - Use the `_` method to append raw content to the **@html_slice**.
 
-Using the `.slice` class method (without including HtmlSlice), the flow is the same, but **@html_slice** is encapsulated and no longer exposed directly.
+Using the `.slice` class method (without including `HtmlSlice`), the flow is the same, but **@html_slice** is encapsulated and no longer exposed directly.
 
 ### Adding Attributes
 HTML attributes can be added to tags as a hash:
@@ -129,10 +131,10 @@ The **@html_slice** holds a hash where every key maps to a html string generated
 ```ruby
 require 'html_slice'
 
-class HelloView
+class HelloWorld
   include HtmlSlice
 
-  def to_html
+  def say
     html_slice do # @html_slice[:default] = ''
       h1 'hello world' # @html_slice[:default] << '<h1>hello world</h1>'
       text # @html_slice[:default] << '<p>Lorem ipsum dolor sit amet</p>'
@@ -157,52 +159,12 @@ class HelloView
   end
 end
 
-HelloView.new.to_html
+HelloWorld.new.say
 ```
 
 ⚠️ Important: Tag methods and our instance methods that use the tag methods must only be called inside an `html_slice` block
 
-### Roda example
-
-```ruby
-class App < Roda                           
-  include HtmlSlice                        
-                                           
-  def layout                               
-    html_layout do                         
-      yield                                
-    end                                    
-  end                                      
-                                             
-  plugin :autoload_hash_branches           
-  autoload_hash_branch_dir('./app/routes') 
-                                           
-  route(&:hash_branches)                   
-end     
-
-# app/routes/foods
-
-class App                              
-  hash_branch('foods') do |r|          
-    r.is do                            
-      r.get do                         
-        @foods = Food.order(:name).all 
-                                       
-        layout do                      
-          ul {                        
-            @foods.each do |food|      
-              li food.inspect          
-            end                        
-          }                          
-        end                            
-      end                              
-    end                                
-  end                                  
-end                                    
-
-```                                   
-
-### Rails usage
+## Rails usage (recommended way)
 
 Add this line in **config/application.rb**:
 ```ruby
@@ -320,6 +282,9 @@ end
 </div>                           
 ```
 
+## Roda usage
+
+Coming soon...
 
 ## Benchmarks
 
@@ -348,12 +313,12 @@ less is better
  papercraft v3.2.1:   97MB allocated - 2.71x more
 ```
 
-### Average requests per second (Rails partials/render vs HtmlSlice)
+### Average requests per second (Rails partials / render vs HtmlSlice)
 
 Rendering 50 fake users, runing apache benchmark to measure 3 times each.
 
 the code:
-```ruby
+```erb
 <div id="users">                 
   <%# @users.each do |user| %>   
     <%#= render user %>          
