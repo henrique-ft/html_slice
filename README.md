@@ -8,23 +8,26 @@ Generate reusable HTML with pure Ruby, in any context, without performance penal
 
 Using `include`:
 ```ruby
-class MyController < ApplicationController
-  include HtmlSlice
+class Restaurant                            
+  include HtmlSlice                   
+                                      
+  def pizza                           
+    html_slice do                     
+      ["🍕","🍕","🍕"].each do |pizza|
+        eat(pizza)                    
+      end                             
+    end                               
+  end                                 
+                                      
+  def eat(pizza)                      
+    div class: 'mouth' do             
+      span "eating: #{pizza}"         
+    end                               
+  end                                 
+end     
 
-  def index
-    html_slice :say_hello do
-      h1 "hello #{pizza}"
-    end
-  end
-
-  def pizza
-    "🍕"
-  end
-end
-
-# index.html.erb
-
-<%= raw @html_slice[:say_hello] %>
+Restaurant.new.pizza                                      
+# <div class='mouth'><span>eating: 🍕</span></div> ...
 ```
 
 Or generating with the `slice` class method:
@@ -38,13 +41,20 @@ puts HtmlSlice.slice :pizza # <h1>"🍕"</h1>
 
 ## Features
 
-- Lightweight, use **HtmlSlice** without performance penalties (see [#benchmarks](#benchmarks)). It's just a single Ruby file.
-- When included, generate HTML dynamically in instance scope: unlike Markaby, HtmlSlice `self` points to the class instance that are using it, make easier to reuse code and make abstractions (see https://github.com/markaby/markaby?tab=readme-ov-file#label-A+Note+About+instance_eval).
-- Unlike Phlex, HtmlSlice uses `include` instead of inheritance. This means we can "plug" it in anywhere—scripts, Rails controllers, services, Sinatra apps, Roda apps—or create specific view classes if needed.
-- Can be used to generate all application html or only html partials (slices 🍕).
-- Escapes HTML content to prevent XSS vulnerabilities.
-- Can be used anywhere without friction, using the `HtmlSlice.slice` class method. Useful to avoid name pollution in specific contexts.
+### ⚡ Performance
+- **20% ~ 30%** faster than standard `Rails` / `Roda` partials.
+- **50%** less memory usage than `Phlex`.
+- Just a single Ruby file without dependencies.
 
+### ➰ Flexibility
+
+- Unlike Phlex, HtmlSlice uses `include` instead of inheritance. This means we can "plug" it in anywhere—scripts, Rails controllers, services, helpers, Sinatra apps, Roda apps—or create specific view / partial classes if needed.
+- Can be used to generate all application html or just partials (slices 🍕) alongside `.erb` files.
+- If you don't like the idea of including HTML methods in some contexts, we can use the `HtmlSlice.slice` class method.
+
+### 🛡️ Security
+- Escapes HTML content to prevent XSS vulnerabilities.
+- It makes it easier to write isolated unit tests.
 
 ## Installation
 
