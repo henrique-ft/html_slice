@@ -282,9 +282,9 @@ end
 
 Ruby `v3.4.0`
 
-Rendering 500 `<h1>` with attributes 1000 times:
-
 ### CPU Time
+
+Rendering 500 `<h1>` with attributes 1000 times:
 
 less is better
 ```
@@ -295,6 +295,8 @@ papercraft v3.2.1  6.186218   0.042994   6.229212 (  6.229857)
 ```
 
 ### Memory usage
+
+Rendering 200 `<h1>` with attributes 200 times:
 
 less is better
 ```
