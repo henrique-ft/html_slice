@@ -246,7 +246,7 @@ Enjoy:
 </div>                           
 ```
 
-#### Scaling:
+#### Scaling
 
 ```
 ▢ views/                 
