@@ -192,91 +192,124 @@ end
 
 ```                                   
 
-### Rails examples
+### Rails usage
 
-##### Rendering pure html slices:
+Add this line in **config/application.rb**:
 ```ruby
-class ApplicationController
-  include HtmlSlice
-
-  def html(&block)
-    html_slice(&block).html_safe
-  end
-end
-
-# Imagine a Rails controller
-class MyController < ApplicationController
-  before_action :set_items
-
-  def index
-    render html: (html do
-      h1 'hello world'
-
-      div class: 'to-do' do
-        to_do_list
-      end
-    end)
-  end
-  # "<h1>hello world</h1><div class='to-do'><ul><li>Clean the house</li><li>Study Ruby</li><li>Play sports</li></ul></div>"
-
-  private
-
-  def to_do_list
-    ul do
-      @items.each do |item|
-        li item
-      end
-    end
-  end
-
-  def set_items
-    @items ||= ['Clean the house', 'Study Ruby', 'Play sports']
-  end
-end
-```
-##### Rendering partials using html slice keys:
-
-```ruby
-class MyController < ApplicationController
-  include HtmlSlice
-
-  def index
-    html_slice :say_hello do
-      h1 "hello #{pizza}"
-    end
-  end
-
-  def pizza
-    "🍕"
-  end
-end
-
-# index.html.erb
-
-<%= raw @html_slice[:say_hello] %>
+config.eager_load_paths << Rails.root.join("app", "views")
 ```
 
-##### Using Rails view helpers
-
-We must use the `_` method that render raw content
-
+Add the slices method in **app/helpers/application_helper.rb**:
 ```ruby
-class HelloController < ApplicationController
-  def index
-    render html: (html do
-      h1 'Hello#h_slice'
-      tag :p, 'Find me in app/controllers/hello_controller.rb'
+module ApplicationHelper          
+  def slices = @slices ||= ::Slices.new 
+end                               
+```
 
-      _ helpers.link_to('oi')
+Create your slices in **app/views/slices.rb**:
+```ruby
+class Slices                                     
+  include HtmlSlice::Rails                     
+                                               
+  def user_list(users)                         
+    slice do                                   
+      users.each do |user|                     
+        div id: dom_id(user) {                 
+          div {                                
+            strong 'Name:'                     
+            _(user.name)                       
+          }                                    
+                                               
+          div {                                
+            strong 'Age:'                      
+            _(user.age)                        
+          }                                    
+                                               
+          _(link_to "New user", new_user_path) 
+        }                                      
+      end                                      
+    end                                        
+  end                                          
+end                                            
+```
 
-      _ (helpers.form_for 'user' do |f|
-        f.text_field('name')
-      end)
-    end)
-  end
-end
+Enjoy:
+
+```erb
+<div id="users">                 
+  <%# @users.each do |user| %>   
+    <%#= render user %>          
+  <%# end %>                     
+                                 
+  <!-- 20% faster -->            
+  <%= slices.user_list(@users) %>  
+</div>                           
+```
+
+#### Scaling:
 
 ```
+▢ views/                 
+  ▢ layouts/             
+  ▢ pwa/                 
+  ▢ slices/              
+      users.rb <- Slices::Users
+  ▢ users/       
+      edit.html.erb      
+      index.html.erb     
+      new.html.erb       
+      show.html.erb      
+    slices.rb              
+```
+
+```ruby
+class Slices                                     
+  attr_reader :users
+  
+  def initialize
+    @users = Slices::Users.new
+  end
+end                                            
+```
+
+```ruby
+class Slices                                    
+  class Users                                   
+    include HtmlSlice::Rails                    
+                                                
+    def list(users)                             
+      slice do                                  
+        users.each do |user|                    
+          div(id: dom_id(user)) {               
+            div {                               
+              strong 'Name:'                    
+              _(user.name)                      
+            }                                   
+                                                
+            div {                               
+              strong 'Age:'                     
+              _(user.age)                       
+            }                                   
+                                                
+            _(link_to "New user", new_user_path)
+          }                                     
+        end                                     
+      end                                       
+    end                                         
+  end                                           
+end                                                                                        
+```
+```erb
+<div id="users">                 
+  <%# @users.each do |user| %>   
+    <%#= render user %>          
+  <%# end %>                     
+                                 
+  <!-- 20% faster -->            
+  <%= slices.users.list(@users) %>  
+</div>                           
+```
+
 
 ## Benchmarks
 
