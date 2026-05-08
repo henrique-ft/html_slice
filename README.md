@@ -54,7 +54,7 @@ puts HtmlSlice.slice :pizza # <h1>"🍕"</h1>
 
 ### 🛡️ Security
 - Escapes HTML content to prevent XSS vulnerabilities.
-- It makes it easier to write isolated unit tests.
+- Easier to write isolated unit tests.
 
 ## Installation
 
