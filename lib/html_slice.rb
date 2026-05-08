@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "html_slice/rails"
 require_relative "html_slice/version"
 require "cgi"
 
@@ -7,7 +8,7 @@ module HtmlSlice
   class Error < StandardError; end
 
   TAGS = %i[
-    div title embed meta br a em b i ul ol li img table tbody thead tr th td
+    div title embed meta br a em b i ul ol li img table tbody thead tr th td strong
     form input button link h1 h2 h3 h4 h5 h6 hr span label iframe template main
     footer aside source section small nav area
   ].freeze
@@ -100,11 +101,10 @@ module HtmlSlice
 
     buffer << "<" << name_str
     unless attributes.empty?
-      attributes_string = ATTRIBUTE_CACHE[attributes.dup] ||= begin
-        attributes.map do |key, value|
-          " #{key.to_s.tr('_', '-')}='#{value}'"
-        end.join
-      end
+      attributes_string = ATTRIBUTE_CACHE[attributes.dup] ||= attributes.map do |key, value|
+        " #{key.to_s.tr("_", "-")}='#{value}'"
+      end.join
+
       buffer << attributes_string
     end
 

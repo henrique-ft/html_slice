@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
 
   spec.files =
     ["lib/html_slice.rb",
+     "lib/html_slice/rails.rb",
      "lib/html_slice/version.rb"]
 
   spec.bindir = "exe"
