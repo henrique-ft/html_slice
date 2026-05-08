@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "html_slice/rails" # Ensure the module under test is loaded
+require "html_slice/rails"
 
 module Rails
   module Application
@@ -42,7 +42,6 @@ end
 RSpec.describe HtmlSlice::Rails do
   let(:dummy_view_context) { DummyViewContext.new }
 
-  # Test that the correct modules are included
   it "includes ActionView::RecordIdentifier" do
     expect(DummyViewContext.ancestors).to include(ActionView::RecordIdentifier)
   end
@@ -64,8 +63,6 @@ RSpec.describe HtmlSlice::Rails do
   end
 
   it "includes Rails.application.routes.url_helpers" do
-    # We need to get the actual module returned by Rails.application.routes.url_helpers
-    # to check for its inclusion.
     expect(DummyViewContext.ancestors).to include(Rails.application.routes.url_helpers)
   end
 
