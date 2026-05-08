@@ -199,16 +199,16 @@ Add this line in **config/application.rb**:
 config.eager_load_paths << Rails.root.join("app", "views")
 ```
 
-Add the slices method in **app/helpers/application_helper.rb**:
+Add the html method in **app/helpers/application_helper.rb**:
 ```ruby
 module ApplicationHelper          
-  def slices = @slices ||= ::Slices.new 
+  def html = @html ||= ::Html.new 
 end                               
 ```
 
-Create your slices in **app/views/slices.rb**:
+Create your html in **app/views/html.rb**:
 ```ruby
-class Slices                                     
+class Html                                     
   include HtmlSlice::Rails                     
                                                
   def user_list(users)                         
@@ -242,7 +242,7 @@ Enjoy:
   <%# end %>                     
                                  
   <!-- 20% faster -->            
-  <%= slices.user_list(@users) %>  
+  <%= html.user_list(@users) %>  
 </div>                           
 ```
 
@@ -252,28 +252,28 @@ Enjoy:
 ▢ views/                 
   ▢ layouts/             
   ▢ pwa/                 
-  ▢ slices/              
-      users.rb <- Slices::Users
+  ▢ html/              
+      users.rb <- Html::Users
   ▢ users/       
       edit.html.erb      
       index.html.erb     
       new.html.erb       
       show.html.erb      
-    slices.rb              
+    html.rb              
 ```
 
 ```ruby
-class Slices                                     
+class Html                                     
   attr_reader :users
   
   def initialize
-    @users = Slices::Users.new
+    @users = Html::Users.new
   end
 end                                            
 ```
 
 ```ruby
-class Slices                                    
+class Html                                    
   class Users                                   
     include HtmlSlice::Rails                    
                                                 
@@ -306,7 +306,7 @@ end
   <%# end %>                     
                                  
   <!-- 20% faster -->            
-  <%= slices.users.list(@users) %>  
+  <%= html.users.list(@users) %>  
 </div>                           
 ```
 
@@ -336,6 +336,27 @@ less is better
  html_slice v0.2.6:   35MB allocated
       phlex v2.4.1:   63MB allocated - 1.78x more
  papercraft v3.2.1:   97MB allocated - 2.71x more
+```
+
+### Average requests per second (Rails partials/render vs HtmlSlice)
+
+Rendering 50 fake users, runing apache benchmark to measure 3 times each.
+
+the code:
+```ruby
+<div id="users">                 
+  <%# @users.each do |user| %>   
+    <%#= render user %>          
+  <%# end %>                     
+                                 
+  <!-- 20% faster -->            
+  <%= html.users.list(@users) %> 
+</div>                           
+```
+
+```
+rails partials: 278rqs (average)
+html_slice: 337rqs (average)
 ```
 
 ## Development
