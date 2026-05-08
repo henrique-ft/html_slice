@@ -137,9 +137,9 @@ class RunHtmlSlice
 end
 
 Benchmark.bm do |x|
-  x.report("erubi v#{Erubi::VERSION}") do
-    CALLS_NUMBER.times { |count| RunErubi.new("Benchmark #{count}").call }
-  end
+  #x.report("erubi v#{Erubi::VERSION}") do
+    #CALLS_NUMBER.times { |count| RunErubi.new("Benchmark #{count}").call }
+  #end
 
   x.report("html_slice v#{HtmlSlice::VERSION}") do
     CALLS_NUMBER.times { |count| RunHtmlSlice.new("Benchmark #{count}").call }

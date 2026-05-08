@@ -289,22 +289,19 @@ Rendering 500 `<h1>` with attributes 1000 times:
 less is better
 ```
                        user     system      total        real
-erubi v1.13.1      0.091837   0.006934   0.098771 (  0.098785)
-html_slice v0.2.5  1.662246   0.002968   1.665214 (  1.665281)
+html_slice v0.2.6  1.662246   0.002968   1.665214 (  1.665281)
 phlex v2.4.1       7.795550   0.009967   7.805517 (  7.806166)
 papercraft v3.2.1  6.186218   0.042994   6.229212 (  6.229857)
 ```
 
 ### Memory usage
+
 less is better
 ```
-erubi v1.13.1:     32.804M allocated
-html_slice v0.2.5: 427.136M allocated
-phlex v2.4.1:      771.086M allocated
-papercraft v3.2.1: 1.019B allocated
+ html_slice v0.2.6:   35MB allocated
+      phlex v2.4.1:   63MB allocated - 1.78x more
+ papercraft v3.2.1:   97MB allocated - 2.71x more
 ```
-
-**One class including HtmlSlice and responsible for generate html, instead of create html components as a class instances*
 
 ## Development
 

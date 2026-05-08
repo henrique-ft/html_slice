@@ -15,4 +15,5 @@ gem "phlex"
 
 gem "memory_profiler"
 gem "benchmark"
+gem "benchmark-memory"
 gem "byebug"

@@ -136,11 +136,24 @@ class RunHtmlSlice
   end
 end
 
+class RunHtmlSlice2
+  include HtmlSlice
+
+  def call(text)
+    html_slice do
+      div do
+        (0..TAGS_NUMBER).each do |i|
+          h1 text, style: "a#{i}", id: i, class: 'c', role: 'd', data_class: 'something'
+        end
+      end
+    end
+  end
+end
 
 Benchmark.memory do |x|
-  x.report("erubi v#{Erubi::VERSION}") do
-    CALLS_NUMBER.times { |count| RunErubi.new("Benchmark #{count}").call }
-  end
+  #x.report("erubi v#{Erubi::VERSION}") do
+    #CALLS_NUMBER.times { |count| RunErubi.new("Benchmark #{count}").call }
+  #end
 
   x.report("html_slice v#{HtmlSlice::VERSION}") do
     CALLS_NUMBER.times { |count| RunHtmlSlice.new("Benchmark #{count}").call }
