@@ -49,7 +49,7 @@ puts HtmlSlice.slice :pizza # <h1>"🍕"</h1>
 ### ➰ Flexibility
 
 - Unlike `Phlex`, `HtmlSlice` uses `include` instead of inheritance. This means we can "plug" it in anywhere—scripts, Rails controllers, services, helpers, Sinatra apps, Roda apps—or create specific view / partial classes if needed.
-- Better for partials (slices 🍕) alongside `.erb` files, but can be used to generate all application HTML.
+- Better for partials alongside `.erb` files, but can be used to generate all application HTML.
 - If you don't like the idea of including HTML methods in some contexts, we can use the `HtmlSlice.slice` class method.
 - 🚂 Rails helpers integration with `include HtmlSlice::Rails` 
 
