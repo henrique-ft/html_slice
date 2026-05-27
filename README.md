@@ -42,7 +42,6 @@ puts HtmlSlice.slice :pizza # <h1>"🍕"</h1>
 ## Features
 
 ### ⚡ Performance
-- **20% ~ 30%** faster than standard `Rails` / `Roda` partials.
 - **50%** less memory usage than `Phlex`.
 - Just a single Ruby file without dependencies.
 
@@ -286,7 +285,7 @@ Coming soon...
 
 ## Benchmarks
 
-Ruby `v3.4.0`
+Ruby `v4.0.3`
 
 ### CPU Time
 
@@ -309,26 +308,6 @@ less is better
  html_slice v0.2.6:   35MB allocated
       phlex v2.4.1:   63MB allocated - 1.78x more
  papercraft v3.2.1:   97MB allocated - 2.71x more
-```
-
-### Average requests per second (Rails partials / render vs HtmlSlice)
-
-Rendering 50 fake users, runing apache benchmark to measure 3 times each.
-
-the code:
-```erb
-<div id="users">                 
-  <%# @users.each do |user| %>   
-    <%#= render user %>          
-  <%# end %>                     
-                                            
-  <%= html.users.list(@users) %> 
-</div>                           
-```
-
-```
-rails partials: 278rqs (average)
-html_slice: 337rqs (average)
 ```
 
 ## Development
