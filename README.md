@@ -186,19 +186,19 @@ class Html
   def user_list(users)                         
     slice do                                   
       users.each do |user|                     
-        div id: dom_id(user) {                 
-          div {                                
+        div id: dom_id(user) do                 
+          div do                                
             strong 'Name:'                     
             _(user.name)                       
-          }                                    
+          end                                    
                                                
-          div {                                
+          div do                                
             strong 'Age:'                      
             _(user.age)                        
-          }                                    
+          end                                    
                                                
           _(link_to "New user", new_user_path) 
-        }                                      
+        end                                      
       end                                      
     end                                        
   end                                          
@@ -212,8 +212,7 @@ Enjoy:
   <%# @users.each do |user| %>   
     <%#= render user %>          
   <%# end %>                     
-                                 
-  <!-- 20% faster -->            
+                                         
   <%= html.user_list(@users) %>  
 </div>                           
 ```
@@ -252,19 +251,19 @@ class Html
     def list(users)                             
       slice do                                  
         users.each do |user|                    
-          div(id: dom_id(user)) {               
-            div {                               
+          div(id: dom_id(user)) do               
+            div do                               
               strong 'Name:'                    
               _(user.name)                      
-            }                                   
+            end                                   
                                                 
-            div {                               
+            div do                               
               strong 'Age:'                     
               _(user.age)                       
-            }                                   
+            end                                   
                                                 
             _(link_to "New user", new_user_path)
-          }                                     
+          end                                     
         end                                     
       end                                       
     end                                         
@@ -276,8 +275,7 @@ end
   <%# @users.each do |user| %>   
     <%#= render user %>          
   <%# end %>                     
-                                 
-  <!-- 20% faster -->            
+                                           
   <%= html.users.list(@users) %>  
 </div>                           
 ```
@@ -323,8 +321,7 @@ the code:
   <%# @users.each do |user| %>   
     <%#= render user %>          
   <%# end %>                     
-                                 
-  <!-- 20% faster -->            
+                                            
   <%= html.users.list(@users) %> 
 </div>                           
 ```
