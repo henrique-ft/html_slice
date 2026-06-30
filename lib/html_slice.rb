@@ -22,9 +22,24 @@ module HtmlSlice
   ].freeze
 
   DEFAULT_SLICE = :default
-  ATTRIBUTE_CACHE = {}
 
-  def self.slice(slice_id = DEFAULT_SLICE, wrap: ["", ""], &block)
+  ATTRIBUTE_KEY_CACHE = {}
+
+  STR = {
+    empty: "",
+    space: " ",
+    underline: "_",
+    dash: "-",
+    single_quote: "-",
+    doctype_html: "<!DOCTYPE html><html>",
+    end_html: "</html>",
+    gt: ">",
+    gt_slash: "/>",
+    lt: "<",
+    lt_slash: "</",
+  }.freeze
+
+  def self.slice(slice_id = DEFAULT_SLICE, wrap: [STR[:empty], STR[:empty]], &block)
     @class ||= Class.new { include HtmlSlice }.new
     @class.html_slice(slice_id, wrap: wrap, &block)
   end
@@ -35,15 +50,15 @@ module HtmlSlice
   end
 
   def html_layout(slice_id = DEFAULT_SLICE, &block)
-    html_slice(slice_id, wrap: ["<!DOCTYPE html><html>", "</html>"], &block)
+    html_slice(slice_id, wrap: [STR[:doctype_html], STR[:end_html]], &block)
   end
 
-  def html_slice(slice_id = DEFAULT_SLICE, wrap: ["", ""], &block)
+  def html_slice(slice_id = DEFAULT_SLICE, wrap: [STR[:empty], STR[:empty]], &block)
     @html_slice_current_id = slice_id
     @html_slice ||= {}
 
     if block_given?
-      buffer = +""
+      buffer = +STR[:empty]
       buffer << wrap[0]
       @html_slice[slice_id] = buffer
       instance_eval(&block)
@@ -81,7 +96,7 @@ module HtmlSlice
   private
 
   def parse_args(args, escape: true)
-    content = ""
+    content = STR[:empty]
     attributes = {}
     first = args[0]
     if first.is_a?(String)
@@ -96,26 +111,25 @@ module HtmlSlice
   def render_tag(name_str, tag_sym, content, attributes, &block)
     @html_slice ||= {}
     @html_slice_current_id ||= DEFAULT_SLICE
-    @html_slice[@html_slice_current_id] ||= +""
+    @html_slice[@html_slice_current_id] ||= +STR[:empty]
     buffer = @html_slice[@html_slice_current_id]
 
-    buffer << "<" << name_str
+    buffer << STR[:lt] << name_str
     unless attributes.empty?
-      attributes_string = ATTRIBUTE_CACHE[attributes.dup] ||= attributes.map do |key, value|
-        " #{key.to_s.tr("_", "-")}='#{value}'"
-      end.join
-
-      buffer << attributes_string
+      attributes.each do |key, value|
+        cached_key = ATTRIBUTE_KEY_CACHE[key] ||= key.to_s.tr(STR[:underline], STR[:dash]).freeze
+        buffer << STR[:space] << cached_key << "='" << value.to_s << STR[:single_quote]
+      end
     end
 
     if block_given?
-      buffer << ">"
+      buffer << STR[:gt]
       instance_exec(&block)
-      buffer << "</#{name_str}>"
+      buffer << [STR[:lt_slash], name_str, STR[:gt]].join
     elsif content.empty? && EMPTY_TAGS.include?(tag_sym)
-      buffer << "/>"
+      buffer << STR[:gt_slash]
     else
-      buffer << ">" << content << "</#{name_str}>"
+      buffer << STR[:gt] << content << [STR[:lt_slash], name_str, STR[:gt]].join
     end
   end
 end
