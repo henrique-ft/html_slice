@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    html_slice (0.2.3)
+    html_slice (0.2.6)
 
 GEM
   remote: https://rubygems.org/
@@ -46,7 +46,7 @@ GEM
     ruby-progressbar (1.13.0)
     unicode-display_width (3.1.2)
       unicode-emoji (~> 4.0, >= 4.0.4)
-    unicode-emoji (4.0.4)
+    unicode-emoji (4.2.0)
 
 PLATFORMS
   ruby

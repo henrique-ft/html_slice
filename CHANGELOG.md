@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+## [0.2.7] - 2026-06-29
+
+- Improve memory usage
+
+## [0.2.6] - 2026-05-08
+
+- Add Rails support
+
 ## [0.2.5] - 2026-04-13
 
 - Implement static methods "HtmlSlice.slice" and "HtmlSlice.layout" for use without context pollution
