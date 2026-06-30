@@ -30,7 +30,8 @@ module HtmlSlice
     space: " ",
     underline: "_",
     dash: "-",
-    single_quote: "-",
+    attr_equal: "='",
+    single_quote: "'",
     doctype_html: "<!DOCTYPE html><html>",
     end_html: "</html>",
     gt: ">",
@@ -118,7 +119,7 @@ module HtmlSlice
     unless attributes.empty?
       attributes.each do |key, value|
         cached_key = ATTRIBUTE_KEY_CACHE[key] ||= key.to_s.tr(STR[:underline], STR[:dash]).freeze
-        buffer << STR[:space] << cached_key << "='" << value.to_s << STR[:single_quote]
+        buffer << STR[:space] << cached_key << STR[:attr_equal] << value.to_s << STR[:single_quote]
       end
     end
 
