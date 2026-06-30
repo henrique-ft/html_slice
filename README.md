@@ -42,14 +42,13 @@ puts HtmlSlice.slice :pizza # <h1>"🍕"</h1>
 ## Features
 
 ### ⚡ Performance
-- **20% ~ 30%** faster than standard `Rails` / `Roda` partials.
 - **50%** less memory usage than `Phlex`.
 - Just a single Ruby file without dependencies.
 
 ### ➰ Flexibility
 
 - Unlike `Phlex`, `HtmlSlice` uses `include` instead of inheritance. This means we can "plug" it in anywhere—scripts, Rails controllers, services, helpers, Sinatra apps, Roda apps—or create specific view / partial classes if needed.
-- Better for partials (slices 🍕) alongside `.erb` files, but can be used to generate all application HTML.
+- Better for partials alongside `.erb` files, but can be used to generate all application HTML.
 - If you don't like the idea of including HTML methods in some contexts, we can use the `HtmlSlice.slice` class method.
 - 🚂 Rails helpers integration with `include HtmlSlice::Rails` 
 
@@ -186,19 +185,19 @@ class Html
   def user_list(users)                         
     slice do                                   
       users.each do |user|                     
-        div id: dom_id(user) {                 
-          div {                                
+        div id: dom_id(user) do                 
+          div do                                
             strong 'Name:'                     
             _(user.name)                       
-          }                                    
+          end                                    
                                                
-          div {                                
+          div do                                
             strong 'Age:'                      
             _(user.age)                        
-          }                                    
+          end                                    
                                                
           _(link_to "New user", new_user_path) 
-        }                                      
+        end                                      
       end                                      
     end                                        
   end                                          
@@ -212,8 +211,7 @@ Enjoy:
   <%# @users.each do |user| %>   
     <%#= render user %>          
   <%# end %>                     
-                                 
-  <!-- 20% faster -->            
+                                         
   <%= html.user_list(@users) %>  
 </div>                           
 ```
@@ -252,19 +250,19 @@ class Html
     def list(users)                             
       slice do                                  
         users.each do |user|                    
-          div(id: dom_id(user)) {               
-            div {                               
+          div(id: dom_id(user)) do               
+            div do                               
               strong 'Name:'                    
               _(user.name)                      
-            }                                   
+            end                                   
                                                 
-            div {                               
+            div do                               
               strong 'Age:'                     
               _(user.age)                       
-            }                                   
+            end                                   
                                                 
             _(link_to "New user", new_user_path)
-          }                                     
+          end                                     
         end                                     
       end                                       
     end                                         
@@ -276,8 +274,7 @@ end
   <%# @users.each do |user| %>   
     <%#= render user %>          
   <%# end %>                     
-                                 
-  <!-- 20% faster -->            
+                                           
   <%= html.users.list(@users) %>  
 </div>                           
 ```
@@ -288,7 +285,7 @@ Coming soon...
 
 ## Benchmarks
 
-Ruby `v3.4.0`
+Ruby `v4.0.3`
 
 ### CPU Time
 
@@ -311,27 +308,6 @@ less is better
  html_slice v0.2.6:   35MB allocated
       phlex v2.4.1:   63MB allocated - 1.78x more
  papercraft v3.2.1:   97MB allocated - 2.71x more
-```
-
-### Average requests per second (Rails partials / render vs HtmlSlice)
-
-Rendering 50 fake users, runing apache benchmark to measure 3 times each.
-
-the code:
-```erb
-<div id="users">                 
-  <%# @users.each do |user| %>   
-    <%#= render user %>          
-  <%# end %>                     
-                                 
-  <!-- 20% faster -->            
-  <%= html.users.list(@users) %> 
-</div>                           
-```
-
-```
-rails partials: 278rqs (average)
-html_slice: 337rqs (average)
 ```
 
 ## Development
